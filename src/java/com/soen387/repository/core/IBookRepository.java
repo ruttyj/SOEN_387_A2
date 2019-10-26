@@ -9,6 +9,22 @@ package com.soen387.repository.core;
  *
  * @author Louis-Simon
  */
-public class IBookRepository {
+public interface IBookRepository {
+
+    public void listAllBooks();
+
+    public void getBookInfo(int id);
+
+    public void getBookInfo(String isbn);
+
+    public int addNewBook();
+
+    public void updateBookInfo(int id, String title, String description); //Perhaps add more fields, not sure what "details" actual entails
+
+    public void setCoverImage();
+
+    public void deleteBook(int id);
+
+    public void deleteAllBooks();
     
 }
