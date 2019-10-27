@@ -1,0 +1,15 @@
+#app.loading {
+    display: none;
+}
+
+
+
+/* App header text formatting */
+.title-bar-text {
+    width: 300px;
+}
+
+.title-bar-text a {
+    color: white !important;
+    text-decoration: none;
+}

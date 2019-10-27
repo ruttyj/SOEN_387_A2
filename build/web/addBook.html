@@ -14,7 +14,7 @@
                 <app-sidebar :menu-items="menuItems" :is-open="isSidebarOpen"></app-sidebar>
                 <app-header :is-sidebar-open.sync="isSidebarOpen" :user-data="userData"></app-header>
                 <v-content>
-                    <home-page/>
+                    <add-book-page/>
                 </v-content>
             </v-app>
         </div>
@@ -30,7 +30,7 @@
         <script src="scripts/components/appSidebar.js"></script>
 
         <!-- Import page -->
-        <script src="scripts/pages/home.js"></script>
+        <script src="scripts/pages/addBook.js"></script>
 
         <!-- Start app -->
         <script src="scripts/main.js"></script>
