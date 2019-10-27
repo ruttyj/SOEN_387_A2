@@ -23,7 +23,7 @@ Vue.component('view-books-page', {
                                             <th class="text-left">ISBN</th>
                                             <th class="text-left">Author</th>
                                             <th class="text-left">Publisher</th>
-                                            <th class="text-left">Actions</th>
+                                            <th class="text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -32,7 +32,7 @@ Vue.component('view-books-page', {
                                             <td>{{ item.isbn }}</td>
                                             <td>{{ item.author }}</td>
                                             <td>{{ item.publisher }}</td>
-                                            <td>
+                                            <td class="text-right">
                                                 <!-- View -->
                                                 <v-btn icon :href="'viewBook.html?id='+item.id">
                                                     <v-icon>visibility</v-icon>
