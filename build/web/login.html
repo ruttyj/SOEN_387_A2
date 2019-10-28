@@ -1,34 +1,71 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link href="styles/material-icons/material-icons.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-        <link href="libs/vuetify2/vuetify.min.css" rel="stylesheet">
-        <link href="styles/global.css" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-    </head>
-    <body>
-        <!-- Display app here -->
-        <div id="app" class="loading">
-            <v-app id="inspire">
-                <login-page/>
-            </v-app>
-        </div>
+<head>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel="stylesheet">
+  <link href="libs/vuetify2/vuetify.min.css" rel="stylesheet">
+  <link href="styles/global.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+  <div id="app" class="loading">
+    <v-app id="inspire" v-cloak>
+    <v-content>
+      <v-container
+        class="fill-height"
+        fluid
+      >
+        <v-row
+          align="center"
+          justify="center"
+        >
+          <v-col
+            cols="12"
+            sm="8"
+            md="4"
+          >
+            <v-card class="elevation-12">
+              <v-toolbar
+                color="primary"
+                dark
+                flat
+              >
+                <v-toolbar-title>Login</v-toolbar-title>
+                <v-spacer></v-spacer>
+              </v-toolbar>
+              <v-card-text>
+                <v-form>
+                  <v-text-field
+                    label="Login"
+                    name="login"
+                    prepend-icon="person"
+                    type="text"
+                  ></v-text-field>
 
-        <!-- Import Libraries -->
-        <script src="libs/axios/axios.min.js"></script>
-        <script src="libs/jquery/jquery-3.4.1.slim.min.js"></script>
-        <script src="libs/vue/vue.js"></script>
-        <script src="libs/vuetify2/vuetify.js"></script>
-
-        <!-- Import components -->
-        <script src="scripts/components/appHeader.js"></script>
-        <script src="scripts/components/appSidebar.js"></script>
-
-        <!-- Import page -->
-        <script src="scripts/pages/login.js"></script>
-
-        <!-- Start app -->
-        <script src="scripts/main.js"></script>
-    </body>
+                  <v-text-field
+                    id="password"
+                    label="Password"
+                    name="password"
+                    prepend-icon="lock"
+                    type="password"
+                  ></v-text-field>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary">Login</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-content>
+  </v-app>
+  </div>
+  
+  <script src="libs/jquery/jquery-3.4.1.slim.min.js"></script>
+  <script src="libs/vue/vue.js"></script>
+  <script src="libs/vuetify2/vuetify.js"></script>
+  <script src="scripts/login.js"></script>
+</body>
 </html>

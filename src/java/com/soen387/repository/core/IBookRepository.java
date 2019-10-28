@@ -17,7 +17,7 @@ public interface IBookRepository {
 
     public void getBookInfo(String isbn);
 
-    public int addNewBook();
+    public int addNewBook(String title, String description, String isbn, String authorFName, String authorLName, String publisher, String publisherAddress, int coverImage);
 
     public void updateBookInfo(int id, String title, String description); //Perhaps add more fields, not sure what "details" actual entails
 

@@ -14,7 +14,7 @@ CREATE TABLE `books` (
   `author_lname` varchar(255) NOT NULL,
   `publisher_company` varchar(255) NOT NULL,
   `publisher_address` varchar(255) NOT NULL,
-  `cover_image` int(11) NOT NULL,
+  `cover_image` int(11),
   PRIMARY KEY (`id`),
   UNIQUE KEY `isbn` (`isbn`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;

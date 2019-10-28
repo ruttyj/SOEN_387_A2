@@ -28,6 +28,7 @@ public class TestClass {
             myRes = myStmt.executeQuery("select * from books");
             
             while (myRes.next()) {
+                
                 System.out.println(myRes.getString(2) + ", " + myRes.getString(5) + ", " + myRes.getString(6));
             }
         } catch (Exception exc) {

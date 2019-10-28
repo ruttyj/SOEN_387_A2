@@ -12,7 +12,7 @@ FROM books
 WHERE isbn = '9173464813408';
 
 #Add new book (id will be returned)
-INSERT INTO books (id, title, description, isbn, author_fname, author_lname, publisher_company, publisher_address, cover_image) VALUES (id, 'NEW BOOK', 'A NEW BOOK ABOUT BOOKS', '1234567891012', 'FOO', 'BAR', 'CONCORDIA PUBLISHING', 'MONTREAL', 0);
+INSERT INTO books (id, title, description, isbn, author_fname, author_lname, publisher_company, publisher_address, cover_iamge) VALUES (id, 'NEW BOOK', 'A NEW BOOK ABOUT BOOKS', '1234567891012', 'FOO', 'BAR', 'CONCORDIA PUBLISHING', 'MONTREAL');
 
 #update book info (id, book details passed as arg)
 UPDATE books
