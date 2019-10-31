@@ -1,3 +1,10 @@
+/* Hide application before the the app has initialized */
 #app.loading {
     display: none;
+}
+
+/* Make logo text pretty */
+.logo-text a {
+    color: white !important;
+    text-decoration: none;
 }
