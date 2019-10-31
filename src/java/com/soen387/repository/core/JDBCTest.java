@@ -4,31 +4,32 @@
  * and open the template in the editor.
  */
 package com.soen387.repository.core;
+
 import java.sql.*;
+
 /**
  *
  * @author Louis-Simon
  */
-public class TestClass {
-    
+public class JDBCTest {
+
     //ID,Title,Descritpion,ISBN,Author,Publisher,Cover
-    
     public static void main(String[] args) throws SQLException {
-        
+
         Connection myConn = null;
         Statement myStmt = null;
         ResultSet myRes = null;
-        
+
         String user = "root";
         String pw = "root";
-        
+
         try {
             myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", user, pw);
             myStmt = myConn.createStatement();
             myRes = myStmt.executeQuery("select * from books");
-            
+
             while (myRes.next()) {
-                
+
                 System.out.println(myRes.getString(2) + ", " + myRes.getString(5) + ", " + myRes.getString(6));
             }
         } catch (Exception exc) {
@@ -45,11 +46,7 @@ public class TestClass {
             }
 
         }
-        
-        
-        
-        
+
     }
-    
-    
+
 }
