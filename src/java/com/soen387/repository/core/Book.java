@@ -14,6 +14,7 @@ import javax.persistence.Id;
 /**
  *
  * @author Louis-Simon
+ * @contributor Jordan Rutty
  */
 @Entity
 public class Book implements Serializable {
@@ -22,10 +23,26 @@ public class Book implements Serializable {
     private String title;
     private String description;
     private String isbn;
-
+    private Author author;
+    private Publisher publisher;
+    
+    
     public Book() {
+        
     }
 
+    
+    // ID
+    public int getID() {
+        return bookID;
+    }
+
+    public void setID(int bookID) {
+        this.bookID = bookID;
+    }
+    
+    
+    // **DEPRECATED **
     public int getBookID() {
         return bookID;
     }
@@ -34,6 +51,8 @@ public class Book implements Serializable {
         this.bookID = bookID;
     }
 
+    
+    // Title
     public String getTitle() {
         return title;
     }
@@ -42,6 +61,8 @@ public class Book implements Serializable {
         this.title = title;
     }
 
+    
+    // Description
     public String getDescription() {
         return description;
     }
@@ -50,6 +71,8 @@ public class Book implements Serializable {
         this.description = description;
     }
 
+    
+    // ISBN
     public String getIsbn() {
         return isbn;
     }
@@ -58,7 +81,25 @@ public class Book implements Serializable {
         this.isbn = isbn;
     }
 
-  
+    
+    // Author
+    public void setAuthor(Author author){
+        this.author = author;
+    }
+
+    public Author getAuthor(){
+        return this.author;
+    }
+
+    // Publisher
+    public void setPublisher(Publisher publisher){
+        this.publisher = publisher;
+    }
+
+    public Publisher getPublisher(){
+        return this.publisher;
+    }
+
     
     
     //===========AUTO-GENERATED NETBEANS STUFF

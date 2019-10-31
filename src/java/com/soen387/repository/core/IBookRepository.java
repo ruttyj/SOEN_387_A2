@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package com.soen387.repository.core;
+import java.util.ArrayList;
 
 /**
  *
@@ -11,16 +12,16 @@ package com.soen387.repository.core;
  */
 public interface IBookRepository {
 
-    public void listAllBooks();
+    public ArrayList<Book> listAllBooks();
 
-    public void getBookInfo(int id);
+    public Book getBookInfo(int id);
 
-    public void getBookInfo(String isbn);
+    public Book getBookInfo(String isbn);
 
-    public int addNewBook(String title, String description, String isbn, String authorFName, String authorLName, String publisher, String publisherAddress, int coverImage);
+    public int addNewBook(Book book);
 
-    public void updateBookInfo(int id, String title, String description); //Perhaps add more fields, not sure what "details" actual entails
-
+    public void updateBookInfo(int id, Book book); 
+    
     public void setCoverImage();
 
     public void deleteBook(int id);

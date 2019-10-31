@@ -14,14 +14,43 @@ public class Driver {
     
     public static void main(String[] args) {
         
-        BookRepository br = BookRepository.getIRepository();
+        BookRepository br = BookRepository.getInstance("Let me in!");
         
         //br.listAllBooks();
-        //br.getBookInfo(6);
+        
+        int updateBookId = 2;
+        Book fetchedBook = br.getBookInfo(updateBookId);
+        fetchedBook.setTitle("BOB");
+        br.updateBookInfo(updateBookId, fetchedBook);
+        
         //br.getBookInfo("2523665635437");
         //br.deleteBook(16);
-        //int a = br.addNewBook("NEW BOOK", "NEW DESCRIPTION", "1234567891234", "NEW", "NEWNEW", "NEW PUBLISHING", "NEW PUBLISHING ADDRESS", 0);
-        //br.getBookInfo(a);
+        
+        
+        
+        
+        
+        br.deleteBook(20);
+        boolean addBook = false;
+        if(addBook){        
+            Book book = new Book();
+            book.setTitle("NEW BOOK");            
+            book.setDescription("NEW DESCRIPTION");
+            book.setIsbn("1234567891234");
+
+            Author author = new Author();
+            author.setFirstName("NEW");            
+            author.setLastName("NEWNEW");
+            book.setAuthor(author);
+
+            Publisher publisher = new Publisher();
+            publisher.setName("NEW PUBLISHING");
+            publisher.setAddress("\"NEW PUBLISHING ADDRESS\"");
+            book.setPublisher(publisher);
+            int a = br.addNewBook(book);
+            br.getBookInfo(a);
+        }
+        
         //br.deleteAllBooks();
     }
     

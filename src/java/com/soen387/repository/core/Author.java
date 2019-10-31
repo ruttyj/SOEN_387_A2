@@ -24,22 +24,25 @@ public class Author implements Serializable {
     public Author() {
     }
 
-    public String getAuthor_fname() {
+
+    public String getFirstName() {
         return author_fname;
     }
 
-    public void setAuthor_fname(String author_fname) {
+    public void setFirstName(String author_fname) {
         this.author_fname = author_fname;
     }
 
-    public String getAuthor_lname() {
+    public String getLastName() {
         return author_lname;
     }
 
-    public void setAuthor_lname(String author_lname) {
+    public void setLastName(String author_lname) {
         this.author_lname = author_lname;
     }
     
+
+
     
     //===========AUTO-GENERATED NETBEANS STUFF
     
