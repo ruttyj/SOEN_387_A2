@@ -23,6 +23,9 @@
                 for (Cookie cookie : cookies) {
                     if (cookie.getName().equals("user")) {
                         userName = cookie.getValue();
+                        %>
+                            <li>{{userName}}</li>
+                        <%
                     }
                     if (cookie.getName().equals("JSESSIONID")) {
                         sessionID = cookie.getValue();

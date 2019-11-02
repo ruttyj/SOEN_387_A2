@@ -52,7 +52,8 @@ public class LogoutServlet extends HttpServlet {
 //    	}
 //    	response.sendRedirect("login.html");
 //    }
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    protected void doAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -70,6 +71,15 @@ public class LogoutServlet extends HttpServlet {
             session.invalidate();
         }
         response.sendRedirect("logintest.html");
+    }
+    
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doAll(request, response);
+    }
+    
+    
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doAll(request, response);
     }
 
 }

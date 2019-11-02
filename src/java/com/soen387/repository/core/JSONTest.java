@@ -46,7 +46,7 @@ public class JSONTest {
         //Get each user, print username and password, digest password to confirm it matches with userPW input
         try {
 
-            obj = parser.parse(new FileReader("C:\\Users\\Louis-Simon\\Documents\\NetBeansProjects\\SOEN_387_A2\\users.JSON"));
+            obj = parser.parse(new FileReader(AppConfig.getInstance().getUserJsonFilePath()));
 
             JSONObject userObject = (JSONObject) obj;
 

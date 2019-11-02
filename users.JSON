@@ -1,14 +1,17 @@
 {
   "users": [
     {
+      "id": 1,
       "username": "admin",
       "password": "21232f297a57a5a743894a0e4a801fc3"
     },
     {
+      "id": 2,
       "username": "root",
       "password": "63a9f0ea7bb98050796b649e85481845"
     },
     {
+      "id": 3,
       "username": "soen387",
       "password": "61fed9e21d92f7e7efbb80505658227c"
     }

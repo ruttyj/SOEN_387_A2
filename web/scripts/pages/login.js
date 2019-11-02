@@ -46,16 +46,32 @@ Vue.component('login-page', {
             </v-row>
         </v-container>`,
     data: () => ({
-        username: '',
-        password: '',
+        username: 'admin',
+        password: 'admin',
     }),
     methods: {
         async onSubmit(){
             try {
                 console.log('Submitted & waiting');
-                var loginResponse = await axios.post('/login', {
-                    username: this.username, 
-                    password: this.password,
+
+                let data = {
+                    user: this.username,
+                    pw: this.password,
+                };
+
+
+                const formData = new FormData();
+                formData.append('user', this.username);
+                formData.append('pw', this.password);
+
+                var loginResponse = await axios({
+                    method: 'get',
+                    url: 'LoginServlet',
+                    headers: {
+                        Accept: '*/*',
+                        'Cache-Control':  'no-cache',
+                    },
+                    data: data,
                 });
                 console.log('loginResponse', loginResponse);
             } catch(e){
