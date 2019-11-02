@@ -33,6 +33,10 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.io.*;
 
 /**
@@ -62,21 +66,12 @@ public class LoginServlet extends HttpServlet {
         
         String UserField = "user";
         String PassField = "pw";
-        
-        out.println("Method: "+ request.getMethod());
-        
-        Map<String, String[]> parametersMap = request.getParameterMap();
-        for (String paramKey : parametersMap.keySet()) {
-            String[] paramValues = parametersMap.get(paramKey);
-            for (String paramValue : paramValues) {
-                out.println(paramKey + " = " + paramValue);
-            }
-        }
-                        
-                        
+       
+        JSONObject JSONResponse = new JSONObject();
+        JSONResponse.put("success", false);
+        JSONResponse.put("message", "");
         
         if(request.getParameter(UserField) != null && request.getParameter(PassField) != null){
-            
             //Get request username & password
             String username = request.getParameter("user");
             String pw = request.getParameter("pw");
@@ -84,23 +79,22 @@ public class LoginServlet extends HttpServlet {
             // Detect User
             User user = HashCheck.getMatchingUser(username, pw);
             
-            out.println((user != null) ? "Success" : "Fail");
             if (user != null) {
                 HttpSession session = request.getSession(true);
                 session.setMaxInactiveInterval(30 * 60);
-                session.setAttribute("JSESSIONID", getJSessionId(request));
                 session.setAttribute("user_id", user.getId());
-                session.setAttribute("username", user.getUsername());                
-
-                //response.sendRedirect("LoginSuccess.jsp");
+                session.setAttribute("username", user.getUsername());    
+                JSONResponse.put("success", true);
+                JSONResponse.put("message", "Success");
             } else {
-                //RequestDispatcher rd = getServletContext().getRequestDispatcher("/logintest.html");
-                out.println("Either username or password is wrong");
-                //rd.include(request, response);
+                JSONResponse.put("message", "Invalid password");
             }
         } else {
-            out.println("login params not found");
+            JSONResponse.put("message", "No credentials provided");
         }
+        
+        response.setContentType("application/json"); 
+        out.println(JSONResponse);
     }
     
     

@@ -53,27 +53,23 @@ Vue.component('login-page', {
         async onSubmit(){
             try {
                 console.log('Submitted & waiting');
-
                 let data = {
                     user: this.username,
                     pw: this.password,
                 };
-
-
-                const formData = new FormData();
-                formData.append('user', this.username);
-                formData.append('pw', this.password);
-
                 var loginResponse = await axios({
-                    method: 'get',
+                    method: 'POST',
                     url: 'LoginServlet',
                     headers: {
-                        Accept: '*/*',
-                        'Cache-Control':  'no-cache',
+                        'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    data: data,
+                    data: simpleQueryString.stringify(data),
                 });
-                console.log('loginResponse', loginResponse);
+
+                
+                if(loginResponse.data.success){
+                    window.location.replace("index.html");
+                }
             } catch(e){
                 console.log('failed', e);
             }
