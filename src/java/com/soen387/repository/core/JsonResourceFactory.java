@@ -20,6 +20,12 @@ public class JsonResourceFactory {
             result.put("description", book.getDescription());
             result.put("isbn", book.getIsbn());
 
+            JSONObject cover = new JSONObject();
+            cover.put("largeUrl", "https://timedotcom.files.wordpress.com/2015/06/521811839-copy.jpg");
+            cover.put("thumbnailUrl", "https://timedotcom.files.wordpress.com/2015/06/521811839-copy.jpg");
+            result.put("cover", cover);
+            
+            
             Author author = book.getAuthor();
             if(author != null)
                 result.put("author", makeAuthorResource(author));

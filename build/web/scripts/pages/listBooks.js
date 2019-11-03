@@ -37,7 +37,7 @@ Vue.component('app-page', {
                                             <td>{{ item.description }}</td>
                                             <td class="text-right">
                                                 <!-- View -->
-                                                <v-btn icon :href="'viewBook.html?id='+item.id">
+                                                <v-btn icon :href="'viewBook?id='+item.id">
                                                     <v-icon>visibility</v-icon>
                                                 </v-btn>
 
@@ -73,35 +73,11 @@ Vue.component('app-page', {
             }
         },
     },
-    created(){
-        this.loadBooks();
-    },
     data: function(){
         return {
-            books: [],
         }
     },
     methods: {
-        loadBooks(){
-            var books = [];
-            for(var i=0; i < 15; ++i){
-                books.push({
-                    id: i,
-                    title: `book ${i}`,
-                    isbn: `isbn_${i}`,
-                    description: `description ${i}`,
-                    author: {
-                        firstName: 'Billy',
-                        lastName: `Joe ${i}`,
-                    },
-                    publisher: {
-                        name: `publisher ${i}`,
-                    },
-                    cover: null,
-                });
-            }
-            this.books = books;
-        },
         async deleteBooks(ids){
             try {
                 console.log('Submitted & waiting');

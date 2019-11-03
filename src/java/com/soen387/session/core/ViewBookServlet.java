@@ -29,11 +29,10 @@ import java.io.*;
  */
 @WebServlet("/viewBook")
 public class ViewBookServlet extends BaseProtectedPage {
-    
-    
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if(this.checkLoggedIn(session, response)){
+            
             PrintWriter out = response.getWriter();
             
             //Get the required view
@@ -43,28 +42,31 @@ public class ViewBookServlet extends BaseProtectedPage {
             JSONObject initalData = new JSONObject();
             initalData.put("userData", getUserJSON(session));
             
-            // Book list
+            
             JSONObject pageData = new JSONObject();
-            JSONArray bookListJson = new JSONArray();
-            IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(session));
-            ArrayList<Book> allBooks = bookRepo.listAllBooks();
-            int i;
-            Book currentBook;
-            for(i = 0; i < allBooks.size(); ++i){
-                currentBook = allBooks.get(i);
-                if(currentBook != null)
-                    bookListJson.add(JsonResourceFactory.makeBookResource(currentBook));
+            if(request.getParameter("id") != null){
+                int bookID = Integer.parseInt(request.getParameter("id"));
+                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(session));
+                Book book = bookRepo.getBookInfo(bookID);
+                
+                // Display Page
+                if(book != null){
+                    
+                    pageData.put("book", JsonResourceFactory.makeBookResource(book));
+
+                    
+                } else {
+                    pageData.put("message", "No Book Found");
+                }
+            } else {
+                pageData.put("message", "No Book Specified");
             }
-            pageData.put("books", bookListJson);
-            
             initalData.put("pageData", pageData);
-            initalData.put("pageDataCount", bookRepo.listAllBooks().size());
-            
-            
+
             // Inject data into view
             request.setAttribute("initalData", initalData.toString());
-            request.setAttribute("script", "listBooks.js");
-            
+            request.setAttribute("script", "viewBook.js");
+
             // Output contents
             response.setContentType("text/html");
             view.include(request, response);

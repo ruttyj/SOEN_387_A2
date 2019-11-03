@@ -15,7 +15,7 @@ Vue.component('app-page', {
 
                         <!-- Form -->
                         <v-card-text>
-                            <v-form @submit="saveBook()">
+                            <template v-if="c_book">
 
                                 <!-- Title -->
                                 <v-text-field label="Title" v-model="title" readonly/>
@@ -24,15 +24,29 @@ Vue.component('app-page', {
                                 <v-text-field label="ISBN" v-model="isbn" readonly/>
 
                                 <!-- Author -->
-                                <v-text-field label="Author" v-model="author" readonly/>
+                                <v-text-field label="Author First Name" v-model="authorFirstName" readonly/>
+                                <v-text-field label="Author Last Name" v-model="authorLastName" readonly/>
 
                                 <!-- Publisher -->
-                                <v-text-field label="Publisher" v-model="publisher" readonly/>
+                                <v-text-field label="Publisher Name" v-model="publisherName" readonly/>
+                                <v-text-field label="Publisher Address" v-model="publisherAddress" readonly/>
 
                                 <!-- Description -->
                                 <v-textarea label="Description " v-model="description" readonly/>
-                               
-                            </v-form>
+
+                                <!-- Image -->
+                                <v-img 
+                                    v-if="largeCoverUrl"
+                                    :src="largeCoverUrl" 
+                                    contain 
+                                    class="full-width"
+                                />
+                            </template>
+
+                            <template v-else>
+                                {{c_message}}
+                            </template>
+                           
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -42,19 +56,75 @@ Vue.component('app-page', {
         // Book Id passed in as a property
         id: {
             default: 0,
+        },
+        pageData:{
+            default: function(){
+                return null;
+            }
         }
     },
     data: () => ({
+        isInitialized: 0,
         title: '',
         isbn: '',
         description: '',
-        author: '',
-        publisher: '',
-        cover: null,
+        authorFirstName: '',
+        authorLastName: '',
+        publisherName: '',
+        publisherAddress: '',
+        largeCoverUrl: null,
     }),
     methods: {
         async loadBook(){
             
         },
-    }
+    },
+    computed:{
+        c_book(){
+            console.log('whoop', this.pageData);
+            if(this.pageData != null){
+                if(typeof(this.pageData.book) !== 'undefined'){
+                    return this.pageData.book;
+                }
+            }
+            return null;
+        },
+        c_message(){
+            if(this.pageData != null){
+                if(typeof(this.pageData.message) !== 'undefined'){
+                    return this.pageData.message;
+                }
+            }
+            return null;
+        },
+    },
+    watch:{
+        c_book:{
+            immediate: true,
+            handler(val){
+                console.log("changed", val);
+                if(!this.isInitialized && val !== null){
+                    console.log("I DID IT");
+                    this.title = this.c_book.title;
+                    this.isbn = this.c_book.isbn;
+                    this.description = this.c_book.description;
+
+                    if(this.c_book.author){
+                        this.authorFirstName = this.c_book.author.firstName;
+                        this.authorLastName = this.c_book.author.lastName;
+                    }
+
+                    if(this.c_book.publisher){
+                        this.publisherName = this.c_book.publisher.name;
+                        this.publisherAddress = this.c_book.publisher.address;
+                    }
+
+                    if(this.c_book.cover){
+                        this.largeCoverUrl = this.c_book.cover.largeUrl;
+                    }
+                }
+            }
+        }
+    },
+    
 });
