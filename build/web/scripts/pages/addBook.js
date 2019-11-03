@@ -18,22 +18,24 @@ Vue.component('app-page', {
                             <v-form @submit="onSubmit()">
 
                                 <!-- Title -->
-                                <v-text-field label="Title" v-model="title" />
+                                <v-text-field label="Title" v-model="title"/>
 
                                 <!-- ISBN -->
-                                <v-text-field label="ISBN" v-model="isbn" />
+                                <v-text-field label="ISBN" v-model="isbn"/>
 
                                 <!-- Author -->
-                                <v-text-field label="Author" v-model="author" />
+                                <v-text-field label="Author First Name" v-model="authorFirstName"/>
+                                <v-text-field label="Author Last Name" v-model="authorLastName"/>
 
                                 <!-- Publisher -->
-                                <v-text-field label="Publisher" v-model="publisher" />
+                                <v-text-field label="Publisher Name" v-model="publisherName"/>
+                                <v-text-field label="Publisher Address" v-model="publisherAddress"/>
 
                                 <!-- Description -->
-                                <v-textarea label="Description " v-model="description" />
+                                <v-textarea label="Description " v-model="description"/>
 
                                 <!-- Cover Photo -->
-                                <v-file-input prepend-icon="attach_file" label="Cover Image" ref="converImageFile" v-model="cover" />
+                                <v-file-input prepend-icon="attach_file" label="Cover Image" ref="converImageFile" v-model="coverFile" />
                                
                             </v-form>
                         </v-card-text>
@@ -48,20 +50,48 @@ Vue.component('app-page', {
             </v-row>
         </v-container>`,
     data: () => ({
-        title: '',
-        isbn: '',
-        description: '',
-        author: '',
-        publisher: '',
-        cover: null,
+        title: 'some title',
+        isbn: 'some isbn',
+        description: 'some description',
+        authorFirstName: 'some authorFirstName',
+        authorLastName: 'some authorLastName',
+        publisherName: 'some publisherName',
+        publisherAddress: 'some publisherAddress',
+        largeCoverUrl: null,
+        coverFile: null,
     }),
     methods: {
         async onSubmit(){
+
             try {
                 console.log('Submitted & waiting');
-                var loginResponse = await axios.post('/addBook', {
+                var response = await axios({
+                    method: 'post',
+                    url: 'addBook',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    data: simpleQueryString.stringify({
+                        title: this.title,
+                        isbn: this.isbn,
+                        description: this.description,
+                        authorFirstName: this.authorFirstName,
+                        authorLastName: this.authorLastName,
+                        publisherName: this.publisherName,
+                        publisherAddress: this.publisherAddress,
+                    }),
                 });
-                console.log('loginResponse', loginResponse);
+
+                if(response.data.status == 'success'){
+                    //location.reload();
+                } 
+                
+                // if not logged in redirect
+                if(response.status == 401){
+                    window.location.replace("login.html");
+                }
+
+                console.log('response', response);
             } catch(e){
                 console.log('failed', e);
             }

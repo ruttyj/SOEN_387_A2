@@ -10,7 +10,7 @@ new Vue({
                 {   
                     icon: 'add',       
                     text: 'Add Book',
-                    href: 'addBook.html',
+                    href: 'addBook',
                 },
                 {   
                     icon: 'book',       

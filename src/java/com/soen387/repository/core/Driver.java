@@ -39,17 +39,14 @@ public class Driver {
         
         //br.listAllBooks();
         
-        int updateBookId = 2;
-        Book fetchedBook = br.getBookInfo(updateBookId);
-        fetchedBook.setTitle("BOB");
-        br.updateBookInfo(updateBookId, fetchedBook);
+     
         
         //br.getBookInfo("2523665635437");
         //br.deleteBook(16);
         
         
-        br.deleteBook(20);
-        boolean addBook = false;
+        //br.deleteBook(20);
+        boolean addBook = true;
         if(addBook){        
             Book book = new Book();
             book.setTitle("NEW BOOK");            

@@ -57,17 +57,8 @@ public class DeleteBooksServlet extends BaseProtectedPage {
                 result.put("message", "Sucessfully Deleted " + deleteIds.size() + " " + (deleteIds.size() == 1 ? "item" : "items") + ".");
             }
             
-            /*
-            // Mirror input back to me
-            for (String paramKey : request.getParameterMap().keySet()) {
-                String[] paramValues = request.getParameterMap().get(paramKey);
-                for (String paramValue : paramValues) {
-                    out.println(paramKey + ": " + paramValue);
-                }
-            }
-            */
         }
-        response.setContentType("text/plain");
+        response.setContentType("application/json");
         out.println(result);
     }
     

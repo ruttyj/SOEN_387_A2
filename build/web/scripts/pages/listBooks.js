@@ -8,26 +8,27 @@ Vue.component('app-page', {
 
                         <!-- Title -->
                         <v-toolbar color="primary" dark flat>
-                            <v-toolbar-title>
-                                Book List
-                            </v-toolbar-title>
+
+                            <template v-if="selectedRows.length">
+                                <v-toolbar-title>
+                                    {{selectedRows.length}} {{selectedRows.length == 1 ? 'item' : 'items'}} selected
+                                </v-toolbar-title>
+                                <v-spacer></v-spacer>
+                                <v-btn icon @click="promptDeleteItems(selectedRows)">
+                                            <v-icon>delete</v-icon>
+                                        </v-btn>
+                            </template>
+
+                            <template v-else>
+                                <v-toolbar-title>
+                                    Book List
+                                </v-toolbar-title>
+                            </template>
+                            
                         </v-toolbar>
 
                         <!-- Form -->
                         <v-card-text>
-                            <v-alert v-if="selectedRows.length" type="info" :icon="false" transition="scale-transition">
-                                <v-row no-gutters >
-                                    <v-col class="grow" align-self="center">
-                                        {{selectedRows.length}} Items selected
-                                    </v-col>
-                                    <v-col class="shrink">
-                                        <v-btn icon @click="promptDeleteItems(selectedRows)">
-                                            <v-icon>delete</v-icon>
-                                        </v-btn>
-                                    </v-col>
-                                </v-row>
-                            </v-alert>
-
                             <v-simple-table>
                                 <template v-slot:default>
                                     <thead>
@@ -185,7 +186,12 @@ Vue.component('app-page', {
 
                 if(response.data.status == 'success'){
                     location.reload();
-                } 
+                }
+
+                // if not logged in redirect
+                if(response.status == 401){
+                    window.location.replace("login.html");
+                }
                 console.log('response', response);
             } catch(e){
                 console.log('failed', e);
