@@ -34,6 +34,10 @@ public class BookRepository implements IBookRepository {
     private static IBookRepository IRepository = null;
 
     private BookRepository() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+        } catch (Exception ex) {
+        }
     }
 
     public static IBookRepository getInstance(String context) {
@@ -105,6 +109,8 @@ public class BookRepository implements IBookRepository {
         try {
             System.out.println("Listing book #" + id + "'s information...");
             System.out.println("Connecting to database...");
+            
+            
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             System.out.println("Creating statement...");

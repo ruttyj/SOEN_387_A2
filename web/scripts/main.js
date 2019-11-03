@@ -15,7 +15,7 @@ new Vue({
                 {   
                     icon: 'book',       
                     text: 'View Books',
-                    href: 'viewBooks.html',
+                    href: 'viewBooks',
                 },
             ],
         };
@@ -28,6 +28,10 @@ new Vue({
         if(typeof(INITIAL_DATA) !== 'undefined'){
             if(typeof(INITIAL_DATA.userData) !== 'undefined'){
                 this.userData = INITIAL_DATA.userData;
+            }
+
+            if(typeof(INITIAL_DATA.pageData) !== 'undefined'){
+                this.pageData = INITIAL_DATA.pageData;
             }
         }
     }
