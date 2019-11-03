@@ -33,21 +33,12 @@ import java.util.List;
  * @author Louis-Simon
  */
 public class HashCheck {
-    private String username;
-    private String password;
-
-    public static JSONParser parser = new JSONParser();
-    public static Object obj;
-    public static JSONObject userObject;
-    public static String jsonUsername;
-    public static String jsonPassword;
-
+    private static JSONParser parser = new JSONParser();
+    private static JSONObject userJSONObject;
 
 
     // User object from request fields
-    public HashCheck(String user, String pw) {
-        this.username = user;
-        this.password = pw;
+    public HashCheck() {
     }
 
     // Receive user password from login, compute its MD5 hash and return it
@@ -72,14 +63,15 @@ public class HashCheck {
             File file = getUserFile();
             
             try {
-                obj = parser.parse(new FileReader(file));
-                JSONObject users = (JSONObject) obj;
+                userJSONObject = (JSONObject)parser.parse(new FileReader(file));
+                JSONObject users = userJSONObject;
                 JSONArray usersArray = (JSONArray) users.get("users");
                 Iterator itr = usersArray.iterator();
 
                 int jsonId;
                 String jsonUsername;
                 String jsonPassword;
+                JSONObject userObject;
                 while (itr.hasNext()) {
                     userObject = (JSONObject) itr.next();
                     jsonId = (int)(long)userObject.get("id");
@@ -106,52 +98,4 @@ public class HashCheck {
         return result;
     }
     
-    
-    
-    // Receive username + MD5 hashed password and compare the hash with the stored password
-    public static boolean compareHashes(String user, String pwHash) {
-        File file = getUserFile();
-        try {
-            obj = parser.parse(new FileReader(file));
-            JSONObject users = (JSONObject) obj;
-            JSONArray usersArray = (JSONArray) users.get("users");
-            Iterator itr = usersArray.iterator();
-
-            String jsonUsername;
-            String jsonPassword;
-            while (itr.hasNext()) {
-                userObject = (JSONObject) itr.next();
-                jsonUsername = (String) userObject.get("username");
-                jsonPassword = (String) userObject.get("password");
-                if ((jsonPassword.equalsIgnoreCase(pwHash)) && (jsonUsername.equals(user))) {
-                    return true;
-                }
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(HashCheck.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(HashCheck.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(HashCheck.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return false;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
 }

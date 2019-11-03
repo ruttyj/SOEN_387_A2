@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -42,6 +44,16 @@ public class AppSession {
     public void login(User user){
         this.session.setAttribute("username", user.getUsername());
         this.session.setAttribute("user_id", user.getId());
+    }
+    
+    public JSONObject getUserJSON(){
+        JSONObject result = null;
+        if(this.session.getAttribute("user_id") != null){
+            result = new JSONObject();
+            result.put("id", this.session.getAttribute("user_id"));
+            result.put("username", this.session.getAttribute("username"));
+        }
+        return result;
     }
     
     public void logout(){
