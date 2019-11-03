@@ -33,9 +33,6 @@ import java.util.List;
  * @author Louis-Simon
  */
 public class HashCheck {
-    private static JSONParser parser = new JSONParser();
-    private static JSONObject userJSONObject;
-
 
     // User object from request fields
     public HashCheck() {
@@ -63,7 +60,8 @@ public class HashCheck {
             File file = getUserFile();
             
             try {
-                userJSONObject = (JSONObject)parser.parse(new FileReader(file));
+                JSONParser parser = new JSONParser();
+                JSONObject userJSONObject = (JSONObject)parser.parse(new FileReader(file));
                 JSONObject users = userJSONObject;
                 JSONArray usersArray = (JSONArray) users.get("users");
                 Iterator itr = usersArray.iterator();

@@ -1,5 +1,7 @@
 package com.soen387.session.core;
 
+import com.soen387.repository.core.IBookRepository;
+import com.soen387.repository.core.BookRepository;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -21,8 +23,8 @@ import java.io.*;
  *
  * @author Jordan Rutty
  */
-@WebServlet("/home")
-public class HomeServlet extends BaseProtectedPage {
+@WebServlet("/books")
+public class BookServlet extends BaseProtectedPage {
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
@@ -35,6 +37,8 @@ public class HomeServlet extends BaseProtectedPage {
             // Get page data
             JSONObject initalData = new JSONObject();
             initalData.put("userData", getUserJSON(session));
+            
+            IBookRepository bookRepo = BookRepository.getInstance("context");
             
             // Inject data into view
             request.setAttribute("initalData", initalData.toString());

@@ -34,8 +34,8 @@ public class Driver {
     public static void main(String[] args) {
         
         
-        /*
-        BookRepository br = BookRepository.getInstance("Let me in!");
+       
+        IBookRepository br = BookRepository.getInstance("Let me in!");
         
         //br.listAllBooks();
         
@@ -70,7 +70,7 @@ public class Driver {
         }
         
         //br.deleteAllBooks();
-        */
+       
     }
     
     

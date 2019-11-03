@@ -22,29 +22,41 @@ Vue.component('app-header', {
                 </template>
 
                 <v-list>
-                    <template v-if="false">
-                        <!-- Display menu if logged in -->
-                        <template v-if="c_isLoggedIn">
-                            <v-list-item href="logout">
-                                <v-list-item-title>Logout</v-list-item-title>
-                            </v-list-item>
-                        </template>
 
-                        <!-- Display menu if NOT logged in -->
-                        <template v-else>
-                            <v-list-item href="login.html">
-                                <v-list-item-title>Login</v-list-item-title>
-                            </v-list-item>
-                        </template>
+                    <v-list-item>
+                            <v-list-item-icon>
+                                <v-icon>person</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title>{{c_username}}</v-list-item-title>
+                            </v-list-item-content>
+                    </v-list-item>
+
+                    
+                    <!-- Display menu if logged in -->
+                    <template v-if="c_isLoggedIn">
+                        <v-list-item href="logout">
+                            <v-list-item-icon>
+                                <v-icon>exit_to_app</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title>Logout</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
                     </template>
 
-                    <!-- DEBUG -->
-                    <v-list-item href="login.html">
-                            <v-list-item-title>Login</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item href="logout">
-                        <v-list-item-title>Logout</v-list-item-title>
-                    </v-list-item>
+                    <!-- Display menu if NOT logged in -->
+                    <template v-else>
+                        <v-list-item href="login.html">
+                            <v-list-item-icon>
+                                <v-icon>vpn_key</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title>Login</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+
 
 
                 </v-list>
@@ -63,7 +75,7 @@ Vue.component('app-header', {
             default: function(){
                 return null;
             }
-        },
+        }, 
     },
     computed:{
         c_isSidebarOpen:{
@@ -78,6 +90,14 @@ Vue.component('app-header', {
 
         c_isLoggedIn(){
             return this.userData !== null;
+        },
+
+
+        c_username(){
+            if(this.userData !== null){
+                return this.userData.username;
+            }
+            return '';
         }
     }
 });

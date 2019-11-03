@@ -20,9 +20,12 @@
         <div id="app" class="loading">
             <v-app id="inspire">
                 <app-sidebar :menu-items="menuItems" :is-open="isSidebarOpen"></app-sidebar>
-                <app-header :is-sidebar-open.sync="isSidebarOpen" :user-data="userData"></app-header>
+                <app-header 
+                    :is-sidebar-open.sync="isSidebarOpen" 
+                    :user-data="userData"
+                ></app-header>
                 <v-content>
-                    <app-page/>
+                    <app-page :user-data="userData" :page-data="pageData"/>
                 </v-content>
             </v-app>
         </div>

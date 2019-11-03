@@ -19,6 +19,7 @@ Vue.component('login-page', {
                                 <!-- Username -->
                                 <v-text-field
                                     v-model="username"
+                                    @input="resetErrors"
                                     label="Login"
                                     name="login"
                                     prepend-icon="person"
@@ -28,6 +29,8 @@ Vue.component('login-page', {
                                 <!-- Password -->
                                 <v-text-field
                                     v-model="password"
+                                    @input="resetErrors"
+                                    :error-messages="errors"
                                     label="Password"
                                     prepend-icon="lock"
                                     type="password"
@@ -48,8 +51,12 @@ Vue.component('login-page', {
     data: () => ({
         username: 'admin',
         password: 'admin',
+        errors: [],
     }),
     methods: {
+        resetErrors(){
+            this.errors = [];
+        },
         async onSubmit(){
             try {
                 console.log('Submitted & waiting');
@@ -69,6 +76,11 @@ Vue.component('login-page', {
                 
                 if(loginResponse.data.success){
                     window.location.replace("home");
+                } else {
+                    console.log('loginResponse.data', loginResponse.data);
+                    this.errors = [
+                        loginResponse.data.message
+                    ];
                 }
             } catch(e){
                 console.log('failed', e);

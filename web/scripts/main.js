@@ -5,6 +5,7 @@ new Vue({
         return {
             isSidebarOpen: true,
             userData: null,
+            pageData: null,
             menuItems: [
                 {   
                     icon: 'add',       

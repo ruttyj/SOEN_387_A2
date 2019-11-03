@@ -31,12 +31,12 @@ public class BookRepository implements IBookRepository {
     static final String PASS = "root";
 
     //Singleton Pattern Implementation
-    private static BookRepository IRepository = null;
+    private static IBookRepository IRepository = null;
 
     private BookRepository() {
     }
 
-    public static BookRepository getInstance(String context) {
+    public static IBookRepository getInstance(String context) {
         if(context == null)
             return null;
         

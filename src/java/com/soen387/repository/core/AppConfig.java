@@ -18,6 +18,12 @@ public class AppConfig {
     /*/
     private String userJsonFilePath = "C:\\Users\\Louis-Simon\\Documents\\NetBeansProjects\\SOEN_387_A2\\users.JSON";
     //*/
+    
+    private String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    private String DB_URL = "jdbc:mysql://localhost:3306/demo";
+    private String USER = "root";
+    private String PASS = "root";
+
 
     
     private static AppConfig instance = null;
@@ -38,4 +44,18 @@ public class AppConfig {
         return this.userJsonFilePath;
     }
     
+    public String getDbDriver(){
+        return this.JDBC_DRIVER;
+    }
+    
+    public String getDbHost(){
+        return this.DB_URL;
+    }
+    
+    public String getDbUser(){
+        return this.USER;
+    }
+    public String getDbPassword(){
+        return this.PASS;
+    }
 }
