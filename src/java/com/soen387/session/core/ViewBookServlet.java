@@ -1,11 +1,11 @@
 package com.soen387.session.core;
 
+import com.soen387.repository.core.JsonResourceFactory;
 import com.soen387.repository.core.IBookRepository;
 import com.soen387.repository.core.BookRepository;
 import com.soen387.repository.core.Book;
 import com.soen387.repository.core.Author;
 import com.soen387.repository.core.Publisher;
-import com.soen387.repository.core.JsonResourceFactory;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,15 +21,15 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.Enumeration;
 import java.io.*;
 
 /**
  *
  * @author Jordan Rutty
  */
-@WebServlet("/listBooks")
-public class BookServlet extends BaseProtectedPage {
+@WebServlet("/viewBook")
+public class ViewBookServlet extends BaseProtectedPage {
+    
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
@@ -46,7 +46,7 @@ public class BookServlet extends BaseProtectedPage {
             // Book list
             JSONObject pageData = new JSONObject();
             JSONArray bookListJson = new JSONArray();
-            IBookRepository bookRepo = BookRepository.getInstance("context");
+            IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(session));
             ArrayList<Book> allBooks = bookRepo.listAllBooks();
             int i;
             Book currentBook;

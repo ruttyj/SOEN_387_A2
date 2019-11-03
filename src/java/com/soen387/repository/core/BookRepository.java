@@ -40,6 +40,22 @@ public class BookRepository implements IBookRepository {
         }
     }
 
+    // SecurityContext can be used to limit the users interaction with the repository based on permissions (which dont exis't in this project)
+    public static IBookRepository getInstance(SecurityContext securityContext) {
+        if(securityContext == null)
+            return null;
+        
+        if (IRepository == null) {
+            synchronized (BookRepository.class) {
+                if (IRepository == null) {
+                    IRepository = new BookRepository();
+                }
+            }
+        }
+        return IRepository;
+    }
+    
+    /* DEPRECATED */
     public static IBookRepository getInstance(String context) {
         if(context == null)
             return null;

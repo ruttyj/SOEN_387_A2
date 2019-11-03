@@ -15,7 +15,7 @@ new Vue({
                 {   
                     icon: 'book',       
                     text: 'View Books',
-                    href: 'viewBooks',
+                    href: 'listBooks',
                 },
             ],
         };
