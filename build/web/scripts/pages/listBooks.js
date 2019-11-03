@@ -173,7 +173,7 @@ Vue.component('app-page', {
             this.deleteProcessing = true;
             try {
                 console.log('Submitted & waiting');
-                var response = await axios({
+                var request = {
                     method: 'post', // @TODO change this to delete
                     url: 'deleteBooks',
                     headers: {
@@ -182,7 +182,9 @@ Vue.component('app-page', {
                     data: simpleQueryString.stringify({
                         ids: ids,
                     }),
-                });
+                };
+                console.log('request', request);
+                var response = await axios(request);
 
                 if(response.data.status == 'success'){
                     location.reload();

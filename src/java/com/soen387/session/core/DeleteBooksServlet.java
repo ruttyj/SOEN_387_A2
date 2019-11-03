@@ -43,7 +43,10 @@ public class DeleteBooksServlet extends BaseProtectedPage {
             if(request.getParameter("ids") != null){
                 String[] paramValues = request.getParameterMap().get("ids");
                 for (String paramValue : paramValues) {
-                    deleteIds.add(Integer.parseInt(paramValue));
+                    int id = Integer.parseInt(paramValue);
+                    if(id != 0){
+                        deleteIds.add(id);
+                    }
                 }
             }
             
