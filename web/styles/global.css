@@ -17,3 +17,20 @@
 .full-width {
     width: 100%;
 }
+
+
+.image-column {
+    max-width: 150px;
+}
+
+.check-column {
+    width: 70px;
+    text-align: center;
+}
+
+
+.complete-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -26,6 +26,17 @@ public class BaseProtectedPage extends HttpServlet {
         return true;
     }
     
+    
+    protected boolean checkLoggedInResponse(HttpSession session, HttpServletResponse response) throws ServletException, IOException {
+        if(session == null || session.getAttribute("user_id") == null){
+            response.setStatus(401); // Unauthorized
+            return false;
+        }
+        return true;
+    }
+        
+        
+    
     public JSONObject getUserJSON(HttpSession session){
         JSONObject result = null;
         if(session.getAttribute("user_id") != null){

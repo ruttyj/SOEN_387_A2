@@ -68,7 +68,7 @@ public class LoginServlet extends HttpServlet {
         String PassField = "pw";
        
         JSONObject JSONResponse = new JSONObject();
-        JSONResponse.put("success", false);
+        JSONResponse.put("status", "failure");
         JSONResponse.put("message", "");
         
         if(request.getParameter(UserField) != null && request.getParameter(PassField) != null){
@@ -84,8 +84,8 @@ public class LoginServlet extends HttpServlet {
                 session.setMaxInactiveInterval(30 * 60);
                 session.setAttribute("user_id", user.getId());
                 session.setAttribute("username", user.getUsername());    
-                JSONResponse.put("success", true);
-                JSONResponse.put("message", "Success");
+                JSONResponse.put("status", "success");
+                JSONResponse.put("message", "Yuo have sucessfully logged in!");
             } else {
                 JSONResponse.put("message", "Invalid password");
             }

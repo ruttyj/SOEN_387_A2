@@ -15,11 +15,29 @@ Vue.component('app-page', {
 
                         <!-- Form -->
                         <v-card-text>
+                            <v-alert v-if="selectedRows.length" type="info" :icon="false" transition="scale-transition">
+                                <v-row no-gutters >
+                                    <v-col class="grow" align-self="center">
+                                        {{selectedRows.length}} Items selected
+                                    </v-col>
+                                    <v-col class="shrink">
+                                        <v-btn icon @click="promptDeleteItems(selectedRows)">
+                                            <v-icon>delete</v-icon>
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-alert>
 
                             <v-simple-table>
                                 <template v-slot:default>
                                     <thead>
                                         <tr>
+                                            <th class="text-left">
+                                                <span @click="clickMasterCheck" >
+                                                    <v-checkbox readonly :input-value="c_allSelected" :indeterminate="c_someSelected && !c_allSelected"/>
+                                                </span>
+                                            </th>
+                                            <th class="text-left">Image</th>
                                             <th class="text-left">Title</th>
                                             <th class="text-left">ISBN</th>
                                             <th class="text-left">Author</th>
@@ -30,6 +48,19 @@ Vue.component('app-page', {
                                     </thead>
                                     <tbody>
                                         <tr v-for="item in c_books" :key="item.id">
+                                            <td class="check-column">
+                                                <v-checkbox
+                                                    v-model="selectedRows"
+                                                    :value="item.id"
+                                                />
+                                            </td>
+                                            <td class="image-column">
+                                                <v-img
+                                                    v-if="item.cover && item.cover.thumbnailUrl"
+                                                    :src="item.cover.thumbnailUrl"
+                                                    contain
+                                                />
+                                            </td>
                                             <td>{{ item.title }}</td>
                                             <td>{{ item.isbn }}</td>
                                             <td>{{ item.author.firstName + " " + item.author.lastName }}</td>
@@ -47,7 +78,7 @@ Vue.component('app-page', {
                                                 </v-btn>
 
                                                 <!-- Delete -->
-                                                <v-btn icon @click="deleteBooks([item.id])">
+                                                <v-btn icon @click="promptDeleteItems([item.id])">
                                                     <v-icon>delete</v-icon>
                                                 </v-btn>
                                             </td>
@@ -61,6 +92,45 @@ Vue.component('app-page', {
                     </v-card>
                 </v-col>
             </v-row>
+
+
+
+            <!-- Confirm Delete Dialog -->
+            <v-dialog
+                v-model="showConfirmDeleteDialog"
+                width="500"
+            >
+                <v-card>
+                    <v-card-title class="headline primary white--text" primary-title>
+                        Confirm Delete
+                    </v-card-title>
+
+                    <template v-if="deleteProcessing">
+                        <div class="pa-4 complete-center">
+                            <v-progress-circular indeterminate color="primary"/>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="pa-4">
+                            Are you sure you want to delete {{deleteItems.length}} {{deleteItems.length == 1 ? 'item' : 'items'}}?
+                        </div>
+                    </template>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="secondary" @click="cancelDeleteItems" :disabled="deleteProcessing">
+                            Cancel
+                        </v-btn>
+                        <v-btn color="primary" @click="confirmDeleteItems" :disabled="deleteProcessing">
+                            Confirm
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+
         </v-container>`,
     props:{
         // Book Id passed in as a property
@@ -75,18 +145,60 @@ Vue.component('app-page', {
     },
     data: function(){
         return {
+            selectedRows: [],
+            deleteItems: [],
+            deleteProcessing: false,
+            showConfirmDeleteDialog: false,
         }
     },
     methods: {
+
+        promptDeleteItems(items){
+            this.deleteItems = items;
+            this.showConfirmDeleteDialog = true;
+        },
+
+
+        cancelDeleteItems(){
+            this.showConfirmDeleteDialog = false;
+        },
+        confirmDeleteItems(){
+            this.deleteBooks(this.deleteItems);
+            this.showConfirmDeleteDialog = false;
+        },
+
+
         async deleteBooks(ids){
+            this.deleteProcessing = true;
             try {
                 console.log('Submitted & waiting');
-                var loginResponse = await axios.delete('/addBook', {
-                    ids: ids,
+                var response = await axios({
+                    method: 'post', // @TODO change this to delete
+                    url: 'deleteBooks',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    data: simpleQueryString.stringify({
+                        ids: ids,
+                    }),
                 });
-                console.log('response', loginResponse);
+
+                if(response.data.status == 'success'){
+                    location.reload();
+                } 
+                console.log('response', response);
             } catch(e){
                 console.log('failed', e);
+            }
+            this.deleteProcessing = false;
+            
+        },
+
+        clickMasterCheck(){
+            if(this.c_allSelected || this.c_someSelected){
+                this.selectedRows = [];
+            } else {
+                this.selectedRows = this.c_books.map(item => item.id);
             }
         }
     },
@@ -96,6 +208,13 @@ Vue.component('app-page', {
                 return this.pageData.books;
             }
             return [];
+        },
+        c_allSelected(){
+            return this.selectedRows.length == this.c_books.length;
+        },
+
+        c_someSelected(){
+            return this.selectedRows.length != 0;
         },
     }
 });

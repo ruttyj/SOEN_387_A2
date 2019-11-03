@@ -74,7 +74,7 @@ Vue.component('login-page', {
                 });
 
                 
-                if(loginResponse.data.success){
+                if(loginResponse.data.status == 'success'){
                     window.location.replace("home");
                 } else {
                     console.log('loginResponse.data', loginResponse.data);

@@ -10,6 +10,7 @@
 <html>
     <head>
         <link href="styles/material-icons/material-icons.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
         <link href="libs/vuetify2/vuetify.min.css" rel="stylesheet">
         <link href="styles/global.css" rel="stylesheet">
