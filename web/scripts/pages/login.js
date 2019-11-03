@@ -68,7 +68,7 @@ Vue.component('login-page', {
 
                 
                 if(loginResponse.data.success){
-                    window.location.replace("index.html");
+                    window.location.replace("home");
                 }
             } catch(e){
                 console.log('failed', e);

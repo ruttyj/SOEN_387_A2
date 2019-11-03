@@ -6,7 +6,7 @@ Vue.component('app-header', {
             <v-toolbar-title class="ml-0 title-bar-text" >
                 <v-icon @click.stop="c_isSidebarOpen = !c_isSidebarOpen">menu</v-icon>
                 <span class="hidden-sm-and-down pl-4 logo-text">
-                    <a href="index.html">Book Library</a>
+                    <a href="home">Book Library</a>
                 </span>
             </v-toolbar-title>
 
@@ -22,19 +22,30 @@ Vue.component('app-header', {
                 </template>
 
                 <v-list>
-                    <!-- Display menu if logged in -->
-                    <template v-if="c_isLoggedIn">
-                        <v-list-item href="logout.html">
-                            <v-list-item-title>Logout</v-list-item-title>
-                        </v-list-item>
+                    <template v-if="false">
+                        <!-- Display menu if logged in -->
+                        <template v-if="c_isLoggedIn">
+                            <v-list-item href="logout">
+                                <v-list-item-title>Logout</v-list-item-title>
+                            </v-list-item>
+                        </template>
+
+                        <!-- Display menu if NOT logged in -->
+                        <template v-else>
+                            <v-list-item href="login.html">
+                                <v-list-item-title>Login</v-list-item-title>
+                            </v-list-item>
+                        </template>
                     </template>
 
-                    <!-- Display menu if NOT logged in -->
-                    <template v-else>
-                        <v-list-item href="login.html">
+                    <!-- DEBUG -->
+                    <v-list-item href="login.html">
                             <v-list-item-title>Login</v-list-item-title>
-                        </v-list-item>
-                    </template>
+                    </v-list-item>
+                    <v-list-item href="logout">
+                        <v-list-item-title>Logout</v-list-item-title>
+                    </v-list-item>
+
 
                 </v-list>
 

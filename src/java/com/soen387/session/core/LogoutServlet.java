@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Louis-Simon
  */
-@WebServlet(urlPatterns = {"/LogoutServlet"})
+@WebServlet(urlPatterns = {"/logout"})
 public class LogoutServlet extends HttpServlet {
 
 //    /**
@@ -55,23 +55,37 @@ public class LogoutServlet extends HttpServlet {
     
     protected void doAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("JSESSIONID")) {
-                    System.out.println("JSESSIONID=" + cookie.getValue());
-                    break;
-                }
-            }
-        }
+        
         //invalidate the session if exists
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession(true);
         System.out.println("User=" + session.getAttribute("user"));
         if (session != null) {
             session.invalidate();
         }
-        response.sendRedirect("logintest.html");
+        
+        Cookie sessionCookie = getSessionCookie(request);
+        if(sessionCookie != null){
+            sessionCookie.setMaxAge(0);
+        }
+        
+        response.sendRedirect("home");
     }
+    
+    
+    protected Cookie getSessionCookie(HttpServletRequest request){
+        Cookie sessionCookie = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("JSESSIONID")) {
+                    sessionCookie = cookie;
+                    break;
+                }
+            }
+        }
+        return sessionCookie;
+    }
+    
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doAll(request, response);

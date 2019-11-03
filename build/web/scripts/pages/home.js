@@ -1,5 +1,5 @@
 // Register this component with VueJS
-Vue.component('home-page', {
+Vue.component('app-page', {
     template: `
         <div class="pa-4">
             <h1>Welcome!</h1>

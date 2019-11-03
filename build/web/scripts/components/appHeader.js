@@ -6,7 +6,7 @@ Vue.component('app-header', {
             <v-toolbar-title class="ml-0 title-bar-text" >
                 <v-icon @click.stop="c_isSidebarOpen = !c_isSidebarOpen">menu</v-icon>
                 <span class="hidden-sm-and-down pl-4 logo-text">
-                    <a href="index.html">Book Library</a>
+                    <a href="home">Book Library</a>
                 </span>
             </v-toolbar-title>
 
@@ -24,7 +24,7 @@ Vue.component('app-header', {
                 <v-list>
                     <!-- Display menu if logged in -->
                     <template v-if="c_isLoggedIn">
-                        <v-list-item href="logout.html">
+                        <v-list-item href="logout">
                             <v-list-item-title>Logout</v-list-item-title>
                         </v-list-item>
                     </template>
@@ -35,7 +35,6 @@ Vue.component('app-header', {
                             <v-list-item-title>Login</v-list-item-title>
                         </v-list-item>
                     </template>
-
                 </v-list>
 
             </v-menu>
@@ -66,6 +65,7 @@ Vue.component('app-header', {
         },
 
         c_isLoggedIn(){
+            console.log('this.userData', this.userData);
             return this.userData !== null;
         }
     }

@@ -21,5 +21,13 @@ new Vue({
     },
     mounted(){
         $('#app').removeClass('loading');
+
+        // Load intial data into application through the global variable.
+        // @WARNING do not use this global varaible anywhere else
+        if(typeof(INITIAL_DATA) !== 'undefined'){
+            if(typeof(INITIAL_DATA.userData) !== 'undefined'){
+                this.userData = INITIAL_DATA.userData;
+            }
+        }
     }
 })

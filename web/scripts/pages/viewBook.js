@@ -1,5 +1,5 @@
 // Register this component with VueJS
-Vue.component('view-book-page', {
+Vue.component('app-page', {
     template: `
         <v-container class="fill-height" fluid >
             <v-row align="center" justify="center" >

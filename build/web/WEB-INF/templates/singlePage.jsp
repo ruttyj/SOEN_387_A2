@@ -1,3 +1,11 @@
+<%-- 
+    Document   : singlePage.jsp
+    Created on : Nov 2, 2019, 8:44:39 PM
+    Author     : ruttyj
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,7 +39,12 @@
         <script src="scripts/components/appSidebar.js"></script>
 
         <!-- Import page -->
-        <script src="scripts/pages/viewBook.js"></script>
+        <script src="scripts/pages/${requestScope["script"]}"></script>
+
+        <!-- Initial App Data -->
+        <script>
+            INITIAL_DATA = ${requestScope["initalData"]};
+        </script>
 
         <!-- Start app -->
         <script src="scripts/main.js"></script>
