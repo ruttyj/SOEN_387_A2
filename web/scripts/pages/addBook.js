@@ -18,24 +18,64 @@ Vue.component('app-page', {
                             <v-form @submit="onSubmit()">
 
                                 <!-- Title -->
-                                <v-text-field label="Title" v-model="title"/>
+                                <v-text-field 
+                                    label="Title" 
+                                    v-model="title"
+                                    :error-messages="getErrorForField('title')"
+                                    @input="resetErrorForField('title')"
+                                />
 
                                 <!-- ISBN -->
-                                <v-text-field label="ISBN" v-model="isbn"/>
+                                <v-text-field 
+                                    label="ISBN" 
+                                    v-model="isbn"
+                                    :error-messages="getErrorForField('isbn')"
+                                    @input="resetErrorForField('isbn')"
+                                />
 
                                 <!-- Author -->
-                                <v-text-field label="Author First Name" v-model="authorFirstName"/>
-                                <v-text-field label="Author Last Name" v-model="authorLastName"/>
+                                <v-text-field 
+                                    label="Author First Name" 
+                                    v-model="authorFirstName" 
+                                    :error-messages="getErrorForField('authorFirstName')"
+                                    @input="resetErrorForField('authorFirstName')"
+                                />
+                                <v-text-field 
+                                    label="Author Last Name" 
+                                    v-model="authorLastName"
+                                    :error-messages="getErrorForField('authorLastName')"
+                                    @input="resetErrorForField('authorLastName')"
+                                />
 
                                 <!-- Publisher -->
-                                <v-text-field label="Publisher Name" v-model="publisherName"/>
-                                <v-text-field label="Publisher Address" v-model="publisherAddress"/>
+                                <v-text-field 
+                                    label="Publisher Name" 
+                                    v-model="publisherName"
+                                    :error-messages="getErrorForField('publisherName')"
+                                    @input="resetErrorForField('publisherName')"
+                                />
+                                <v-text-field 
+                                    label="Publisher Address" 
+                                    v-model="publisherAddress"
+                                    :error-messages="getErrorForField('publisherAddress')"
+                                    @input="resetErrorForField('publisherAddress')"
+                                />
 
                                 <!-- Description -->
-                                <v-textarea label="Description " v-model="description"/>
+                                <v-textarea 
+                                    label="Description " 
+                                    v-model="description"
+                                    :error-messages="getErrorForField('description')"
+                                    @input="resetErrorForField('description')"
+                                />
 
                                 <!-- Cover Photo -->
-                                <v-file-input prepend-icon="attach_file" label="Cover Image" ref="converImageFile" v-model="coverFile" />
+                                <v-file-input 
+                                    prepend-icon="attach_file" 
+                                    label="Cover Image" 
+                                    ref="converImageFile" 
+                                    v-model="coverFile" 
+                                />
                                
                             </v-form>
                         </v-card-text>
@@ -59,8 +99,21 @@ Vue.component('app-page', {
         publisherAddress: 'some publisherAddress',
         largeCoverUrl: null,
         coverFile: null,
+        errors: {},
     }),
     methods: {
+        resetErrorForField(field){
+            if(typeof(this.errors[field]) !== 'undefined' && this.errors[field] !== null){
+                this.$set(this.errors, field, null);
+            }
+        },
+        getErrorForField(field){
+            var result = null;
+            if(typeof(this.errors[field]) !== 'undefined'){
+                result = this.errors[field];
+            }
+            return result;
+        },
         async onSubmit(){
 
             try {
@@ -83,7 +136,9 @@ Vue.component('app-page', {
                 });
 
                 if(response.data.status == 'success'){
-                    //location.reload();
+                    window.location.href = '/viewBook?id='+response.data.id;
+                } else if(typeof(response.data.errors) !== 'undefined'){
+                    this.errors = response.data.errors;
                 } 
                 
                 // if not logged in redirect

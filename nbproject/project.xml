@@ -17,9 +17,7 @@
             </web-module-libraries>
             <web-module-additional-libraries/>
             <source-roots>
-                <root id="src.dir" name="src\java"/>
-                <root id="src.repository.dir"/>
-                <root id="src.session.dir"/>
+                <root id="src.java.dir"/>
             </source-roots>
             <test-roots>
                 <root id="test.src.dir"/>

@@ -18,21 +18,21 @@ Vue.component('app-page', {
                             <template v-if="c_book">
 
                                 <!-- Title -->
-                                <v-text-field label="Title" v-model="title" readonly/>
+                                <v-text-field label="Title" v-model="title" readonly disabled/>
 
                                 <!-- ISBN -->
-                                <v-text-field label="ISBN" v-model="isbn" readonly/>
+                                <v-text-field label="ISBN" v-model="isbn" readonly disabled/>
 
                                 <!-- Author -->
-                                <v-text-field label="Author First Name" v-model="authorFirstName" readonly/>
-                                <v-text-field label="Author Last Name" v-model="authorLastName" readonly/>
+                                <v-text-field label="Author First Name" v-model="authorFirstName" readonly disabled/>
+                                <v-text-field label="Author Last Name" v-model="authorLastName" readonly disabled/>
 
                                 <!-- Publisher -->
-                                <v-text-field label="Publisher Name" v-model="publisherName" readonly/>
-                                <v-text-field label="Publisher Address" v-model="publisherAddress" readonly/>
+                                <v-text-field label="Publisher Name" v-model="publisherName" readonly disabled/>
+                                <v-text-field label="Publisher Address" v-model="publisherAddress" readonly disabled/>
 
                                 <!-- Description -->
-                                <v-textarea label="Description " v-model="description" readonly/>
+                                <v-textarea label="Description " v-model="description" readonly disabled/>
 
                                 <!-- Image -->
                                 <v-img 
@@ -48,6 +48,12 @@ Vue.component('app-page', {
                             </template>
                            
                         </v-card-text>
+    
+                        <!-- Actions -->
+                        <v-card-actions v-if="c_book">
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" :href="'/editBook?id='+c_book.id">Edit</v-btn>
+                        </v-card-actions>
                     </v-card>
                 </v-col>
             </v-row>
