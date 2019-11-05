@@ -43,9 +43,8 @@ import java.io.*;
  *
  * @author Louis-Simon
  */
-@WebServlet("/LoginServlet")
-public class LoginServlet extends HttpServlet {
-    
+@WebServlet("/login")
+public class LoginServlet extends BaseProtectedPage {
     
     protected String getJSessionId(HttpServletRequest request){
         String jSessionId = null;
@@ -61,7 +60,8 @@ public class LoginServlet extends HttpServlet {
         return jSessionId;
     }
     
-    public void logUserIn(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // CONSULT user.JSON file to see user/pw
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         
         String UserField = "user";
@@ -98,15 +98,21 @@ public class LoginServlet extends HttpServlet {
     }
     
     
-    // CONSULT user.JSON file to see user/pw
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logUserIn(request, response);
-    }
-    
     
      // CONSULT user.JSON file to see user/pw
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logUserIn(request, response);
+        HttpSession session = request.getSession(true);
+        if(this.isLoggedIn(session)){
+            response.sendRedirect("/home");
+        } else {
+            //Get the required view
+            RequestDispatcher view = request.getRequestDispatcher("WEB-INF/templates/publicPage.jsp"); 
+            request.setAttribute("script", "login.js");
+
+            // Output contents
+            response.setContentType("text/html");
+            view.include(request, response);
+        }
     }
     
 }

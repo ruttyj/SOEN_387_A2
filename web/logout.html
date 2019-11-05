@@ -13,7 +13,9 @@
             <v-app id="inspire">
                 <app-simple-header :is-sidebar-open.sync="isSidebarOpen" :user-data="userData"/></app-simple-header>
                 <v-content>
-                    <login-page/>
+                    <div class="pa-4">
+                        You have been logged out! <a href="/home">Click here</a> to go back to home.
+                    </div>
                 </v-content>
             </v-app>
         </div>
@@ -27,9 +29,6 @@
 
         <!-- Import components -->
         <script src="scripts/components/appSimpleHeader.js"></script>
-
-        <!-- Import page -->
-        <script src="scripts/pages/login.js"></script>
 
         <!-- Start app -->
         <script src="scripts/main.js"></script>

@@ -2,6 +2,7 @@
 Vue.component('app-page', {
     template: `
         <v-container class="fill-height" >
+            <h1>Welcome {{c_username}}!</h1>
             <v-row align="center" justify="center" >
                 <v-col cols="12" sm="12" md="12" >
                     <v-card class="elevation-12">
@@ -15,14 +16,19 @@ Vue.component('app-page', {
                                 </v-toolbar-title>
                                 <v-spacer></v-spacer>
                                 <v-btn icon @click="promptDeleteItems(selectedRows)">
-                                            <v-icon>delete</v-icon>
-                                        </v-btn>
+                                    <v-icon>delete</v-icon>
+                                </v-btn>
                             </template>
 
                             <template v-else>
                                 <v-toolbar-title>
                                     Book List
                                 </v-toolbar-title>
+    
+                                <v-spacer></v-spacer>
+                                <v-btn icon href="/addBook" title="Add Book">
+                                    <v-icon>add</v-icon>
+                                </v-btn>
                             </template>
                             
                         </v-toolbar>
@@ -143,6 +149,11 @@ Vue.component('app-page', {
                 return null;
             }
         },
+        userData:{
+            default: function(){
+                return null;
+            }
+        },
     },
     data: function(){
         return {
@@ -192,7 +203,7 @@ Vue.component('app-page', {
 
                 // if not logged in redirect
                 if(response.status == 401){
-                    window.location.replace("login.html");
+                    window.location.replace("/login");
                 }
                 console.log('response', response);
             } catch(e){
@@ -220,9 +231,14 @@ Vue.component('app-page', {
         c_allSelected(){
             return this.selectedRows.length == this.c_books.length;
         },
-
         c_someSelected(){
             return this.selectedRows.length != 0;
+        },
+        c_username(){
+            if(this.userData !== null){
+                return this.userData.username;
+            }
+            return '';
         },
     }
 });

@@ -17,10 +17,16 @@ import org.json.simple.JSONObject;
 public class BaseProtectedPage extends HttpServlet {
     
     
+    
+    protected boolean isLoggedIn(HttpSession session){
+        return session != null && session.getAttribute("user_id") != null;
+    }
+    
+    
     // Check to see if the user is logged in else redirect
     protected boolean checkLoggedIn(HttpSession session, HttpServletResponse response) throws ServletException, IOException {
-        if(session == null || session.getAttribute("user_id") == null){
-            response.sendRedirect("login.html");
+        if(!this.isLoggedIn(session)){
+            response.sendRedirect("/login");
             return false;
         }
         return true;
@@ -28,7 +34,7 @@ public class BaseProtectedPage extends HttpServlet {
     
     
     protected boolean checkLoggedInResponse(HttpSession session, HttpServletResponse response) throws ServletException, IOException {
-        if(session == null || session.getAttribute("user_id") == null){
+        if(!this.isLoggedIn(session)){
             response.setStatus(401); // Unauthorized
             return false;
         }
@@ -49,7 +55,7 @@ public class BaseProtectedPage extends HttpServlet {
     
     protected SecurityContext getSecurityContext(HttpSession session){
         SecurityContext securityContext = null;
-        if(session != null && session.getAttribute("user_id") != null){
+        if(this.isLoggedIn(session)){
             securityContext = new SecurityContext();
             securityContext.setUserId((int)session.getAttribute("user_id"));
         }

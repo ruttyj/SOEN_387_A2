@@ -6,7 +6,7 @@ Vue.component('app-header', {
             <v-toolbar-title class="ml-0 title-bar-text" >
                 <v-icon @click.stop="c_isSidebarOpen = !c_isSidebarOpen">menu</v-icon>
                 <span class="hidden-sm-and-down pl-4 logo-text">
-                    <a href="home">Book Library</a>
+                    <a href="/home">Book Library</a>
                 </span>
             </v-toolbar-title>
 
@@ -47,7 +47,7 @@ Vue.component('app-header', {
 
                     <!-- Display menu if NOT logged in -->
                     <template v-else>
-                        <v-list-item href="login.html">
+                        <v-list-item href="/login">
                             <v-list-item-icon>
                                 <v-icon>vpn_key</v-icon>
                             </v-list-item-icon>

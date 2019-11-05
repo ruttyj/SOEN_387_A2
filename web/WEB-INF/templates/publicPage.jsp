@@ -1,3 +1,10 @@
+<%-- 
+    Document   : singlePage.jsp
+    Created on : Nov 2, 2019, 8:44:39 PM
+    Author     : ruttyj
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -11,8 +18,7 @@
         <!-- Display app here -->
         <div id="app" class="loading">
             <v-app id="inspire">
-                <app-sidebar :menu-items="menuItems" :is-open="isSidebarOpen"></app-sidebar>
-                <app-header :is-sidebar-open.sync="isSidebarOpen" :user-data="userData"></app-header>
+                <app-simple-header :is-sidebar-open.sync="isSidebarOpen" :user-data="userData"/></app-simple-header>
                 <v-content>
                     <app-page/>
                 </v-content>
@@ -27,11 +33,10 @@
         <script src="libs/vuetify2/vuetify.js"></script>
 
         <!-- Import components -->
-        <script src="scripts/components/appHeader.js"></script>
-        <script src="scripts/components/appSidebar.js"></script>
+        <script src="scripts/components/appSimpleHeader.js"></script>
 
         <!-- Import page -->
-        <script src="scripts/pages/addBook.js"></script>
+        <script src="scripts/pages/${requestScope["script"]}"></script>
 
         <!-- Start app -->
         <script src="scripts/main.js"></script>

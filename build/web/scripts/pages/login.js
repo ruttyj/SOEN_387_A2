@@ -1,5 +1,5 @@
 // Register this component with VueJS
-Vue.component('login-page', {
+Vue.component('app-page', {
     template: `
         <v-container class="fill-height" fluid >
             <v-row align="center" justify="center" >
@@ -66,7 +66,7 @@ Vue.component('login-page', {
                 };
                 var loginResponse = await axios({
                     method: 'POST',
-                    url: 'LoginServlet',
+                    url: 'login',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
@@ -75,7 +75,7 @@ Vue.component('login-page', {
 
                 
                 if(loginResponse.data.status == 'success'){
-                    window.location.replace("home");
+                    window.location.replace("/home");
                 } else {
                     console.log('loginResponse.data', loginResponse.data);
                     this.errors = [

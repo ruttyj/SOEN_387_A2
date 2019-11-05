@@ -88,7 +88,7 @@ Vue.component('app-page', {
                 
                 // if not logged in redirect
                 if(response.status == 401){
-                    window.location.replace("login.html");
+                    window.location.replace("/login");
                 }
 
                 console.log('response', response);

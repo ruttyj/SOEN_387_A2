@@ -1,7 +1,14 @@
+<%-- 
+    Document   : singlePage.jsp
+    Created on : Nov 2, 2019, 8:44:39 PM
+    Author     : ruttyj
+--%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <link href="styles/material-icons/material-icons.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
         <link href="libs/vuetify2/vuetify.min.css" rel="stylesheet">
         <link href="styles/global.css" rel="stylesheet">
@@ -12,9 +19,12 @@
         <div id="app" class="loading">
             <v-app id="inspire">
                 <app-sidebar :menu-items="menuItems" :is-open="isSidebarOpen"></app-sidebar>
-                <app-header :is-sidebar-open.sync="isSidebarOpen" :user-data="userData"></app-header>
+                <app-header 
+                    :is-sidebar-open.sync="isSidebarOpen" 
+                    :user-data="userData"
+                ></app-header>
                 <v-content>
-                    <app-page/>
+                    <app-page :user-data="userData" :page-data="pageData"/>
                 </v-content>
             </v-app>
         </div>
@@ -31,7 +41,12 @@
         <script src="scripts/components/appSidebar.js"></script>
 
         <!-- Import page -->
-        <script src="scripts/pages/viewBook.js"></script>
+        <script src="scripts/pages/${requestScope["script"]}"></script>
+
+        <!-- Initial App Data -->
+        <script>
+            INITIAL_DATA = ${requestScope["initalData"]};
+        </script>
 
         <!-- Start app -->
         <script src="scripts/main.js"></script>

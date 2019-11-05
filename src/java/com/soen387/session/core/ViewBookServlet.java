@@ -36,7 +36,7 @@ public class ViewBookServlet extends BaseProtectedPage {
             PrintWriter out = response.getWriter();
             
             //Get the required view
-            RequestDispatcher view = request.getRequestDispatcher("WEB-INF/templates/singlePage.jsp"); 
+            RequestDispatcher view = request.getRequestDispatcher("WEB-INF/templates/protectedPage.jsp"); 
             
             // Get page data
             JSONObject initalData = new JSONObject();
