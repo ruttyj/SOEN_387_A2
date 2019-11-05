@@ -80,7 +80,7 @@ Vue.component('app-page', {
                                                 </v-btn>
 
                                                 <!-- Edit -->
-                                                <v-btn icon :href="'editBook.html?id='+item.id">
+                                                <v-btn icon :href="'editBook?id='+item.id">
                                                     <v-icon>edit</v-icon>
                                                 </v-btn>
 

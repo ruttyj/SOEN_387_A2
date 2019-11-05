@@ -4,6 +4,7 @@ import com.soen387.repository.com.soen387.repository.core.IBookRepository;
 import com.soen387.repository.com.soen387.repository.core.BookRepository;
 import com.soen387.repository.com.soen387.repository.core.Book;
 import com.soen387.repository.com.soen387.repository.core.Author;
+import com.soen387.repository.com.soen387.repository.core.JsonResourceFactory;
 import com.soen387.repository.com.soen387.repository.core.Publisher;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class EditBookServlet extends BaseProtectedPage {
     public void doDisplayBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         if(this.checkLoggedIn(session, response)){
+            
             PrintWriter out = response.getWriter();
             
             //Get the required view
@@ -41,7 +43,22 @@ public class EditBookServlet extends BaseProtectedPage {
             JSONObject initalData = new JSONObject();
             initalData.put("userData", getUserJSON(session));
             
+            
             JSONObject pageData = new JSONObject();
+            if(request.getParameter("id") != null){
+                int bookID = Integer.parseInt(request.getParameter("id"));
+                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(session));
+                Book book = bookRepo.getBookInfo(bookID);
+                
+                // Display Page
+                if(book != null){
+                    pageData.put("book", JsonResourceFactory.makeBookResource(book));
+                } else {
+                    pageData.put("message", "No Book Found");
+                }
+            } else {
+                pageData.put("message", "No Book Specified");
+            }
             initalData.put("pageData", pageData);
 
             // Inject data into view
@@ -55,7 +72,7 @@ public class EditBookServlet extends BaseProtectedPage {
     }
     
     
-    public void doAddBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doEditBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         
         PrintWriter out = response.getWriter();
@@ -63,14 +80,17 @@ public class EditBookServlet extends BaseProtectedPage {
         JSONObject errors = new JSONObject();
         result.put("status", "failure");
         result.put("message", "");
+        String message = "";
            
         if(this.checkLoggedInResponse(session, response)){
             // Collect Ids into ArrayList
            
-            
             IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(session));
 
             String f;
+            
+            f = "id";
+            int id = Integer.parseInt(request.getParameter(f) != null ? request.getParameter(f) : "");
             
             f = "title";
             String bookTitle = request.getParameter(f) != null ? request.getParameter(f) : "";
@@ -95,17 +115,26 @@ public class EditBookServlet extends BaseProtectedPage {
             
             
             boolean valid = true;
-            Book existingBook = bookRepo.getBookInfo(bookIsbn);
-            if(existingBook != null){
-                valid = false;
-                JSONArray isbnErrors = new JSONArray();
-                isbnErrors.add("ISBN must be unique.");
-                errors.put("isbn", isbnErrors);
+            Book existingIsbnBook = bookRepo.getBookInfo(bookIsbn);
+            if(existingIsbnBook != null){
+                if( existingIsbnBook.getID() != id){
+                    valid = false;
+                    JSONArray isbnErrors = new JSONArray();
+                    isbnErrors.add("ISBN must be unique.");
+                    errors.put("isbn", isbnErrors);
+                    message = "Error invalid fields.";
+                }
             }
+            
+            Book book = bookRepo.getBookInfo(id);
+            if(book == null){
+                valid = false;
+                message = "Error book does not exist.";
+            }
+            
                
             // If passes validation
             if(valid){
-                Book book = new Book();
                 book.setTitle(bookTitle);            
                 book.setDescription(bookDescription);
                 book.setIsbn(bookIsbn);
@@ -120,18 +149,14 @@ public class EditBookServlet extends BaseProtectedPage {
                 publisher.setAddress(bookPublisherAddress);
                 book.setPublisher(publisher);
 
-                int newBookID = bookRepo.addNewBook(book);
-
-                if(newBookID != 0){
-                    result.put("status", "success");
-                    result.put("id", newBookID);
-                    result.put("message", "Sucessfully added new book.");
-                } else {
-                    result.put("message", "Failed to added new book.");
-                }
+                bookRepo.updateBookInfo(id, book);
+                
+                result.put("status", "success");
+                result.put("message", "Sucessfully updated new book.");
+               
             } else {
                 result.put("errors", errors);
-                result.put("message", "Error invalid fields");
+                result.put("message", message);
             }
         }
         response.setContentType("application/json");
@@ -139,7 +164,7 @@ public class EditBookServlet extends BaseProtectedPage {
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doAddBook(request, response);
+        doEditBook(request, response);
     }
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

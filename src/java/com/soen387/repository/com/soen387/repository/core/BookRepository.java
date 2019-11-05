@@ -77,19 +77,8 @@ public class BookRepository implements IBookRepository {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             stmt = conn.createStatement();
             res = stmt.executeQuery("SELECT * FROM books");
-
-            
             while (res.next()) {
-                Book result = this.makeBookFromRow(res);
-                results.add(result);
-
-                System.out.print("Book ID: " + result.getId());
-                System.out.print(" Title: " + result.getTitle());
-                System.out.print(" Description: " + result.getDescription());
-                System.out.print(" ISBN: " + result.getIsbn());
-                System.out.print(" Author: " + result.getAuthor().getFirstName() + " " + result.getAuthor().getLastName());
-                System.out.print(" Publisher: " + result.getPublisher().getName());
-                System.out.println(" Address: " + result.getPublisher().getAddress());
+                results.add(this.makeBookFromRow(res));
             }
         } catch (Exception exc) {
             exc.printStackTrace();
@@ -119,7 +108,6 @@ public class BookRepository implements IBookRepository {
             pstmt = conn.prepareStatement("SELECT * FROM books WHERE id=?");
             pstmt.setInt(1, id);
             res = pstmt.executeQuery();
-
             while (res.next()) {
                 result = this.makeBookFromRow(res);
                 break;
