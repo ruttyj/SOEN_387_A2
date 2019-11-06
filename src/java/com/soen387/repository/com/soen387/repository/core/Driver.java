@@ -22,7 +22,6 @@ import org.json.simple.parser.ParseException;
 import static java.lang.System.out;
 
 
-import com.soen387.session.com.soen387.session.core.HashCheck;
 
 /**
  *

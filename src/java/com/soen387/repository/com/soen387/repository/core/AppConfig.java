@@ -4,7 +4,10 @@
  * and open the template in the editor.
  */
 package com.soen387.repository.com.soen387.repository.core;
-import java.io.File;
+import java.io.*;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author ruttyj
@@ -24,14 +27,25 @@ public class AppConfig {
     
     private String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     private String DB_URL = "jdbc:mysql://localhost:3306/demo?autoReconnect=true&useSSL=false";
-    private String USER = "root";
     private String PASS = "root";
 
-
+    Properties config = null;
     
     private static AppConfig instance = null;
 
-    private AppConfig(){}
+    private AppConfig(){
+        this.config = new Properties();
+        System.out.println("AppConfig");
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            InputStream input = classLoader.getResourceAsStream("com/soen387/repository/com/soen387/repository/core/config.properties");
+            
+            this.config = new Properties();
+            this.config.load(input);
+        } catch(Exception ex){
+            Logger.getLogger(AppConfig.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     public static AppConfig getInstance(){
         if(instance == null){
@@ -44,26 +58,26 @@ public class AppConfig {
     
     
     public String getUserJsonFilePath(){
-        return this.userJsonFilePath;
+        return this.config.getProperty("userJsonFilePath");
     }
     
     public String getDbDriver(){
-        return this.JDBC_DRIVER;
+        return this.config.getProperty("jbdcDriver");
     }
     
     public String getDbHost(){
-        return this.DB_URL;
+        return this.config.getProperty("dbHost");
     }
     
     public String getDbUser(){
-        return this.USER;
+        return this.config.getProperty("dbUser");
     }
     public String getDbPassword(){
-        return this.PASS;
+        return this.config.getProperty("dbPass");
     }
     
     
     public String getNoImagePath(){
-        return this.noImagePath;
+        return this.config.getProperty("noImagePath");
     }
 }

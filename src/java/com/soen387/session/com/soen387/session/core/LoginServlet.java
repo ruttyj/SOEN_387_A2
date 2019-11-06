@@ -6,6 +6,7 @@ package com.soen387.session.com.soen387.session.core;
  * and open the template in the editor.
  */
 
+import com.soen387.repository.com.soen387.repository.core.HashCheck;
 import com.soen387.repository.com.soen387.repository.core.AppConfig;
 import com.soen387.repository.com.soen387.repository.core.User;
 import java.io.IOException;

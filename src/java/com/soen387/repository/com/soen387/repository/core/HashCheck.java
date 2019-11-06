@@ -1,4 +1,4 @@
-package com.soen387.session.com.soen387.session.core;
+package com.soen387.repository.com.soen387.repository.core;
 
 
 import com.soen387.repository.com.soen387.repository.core.AppConfig;
