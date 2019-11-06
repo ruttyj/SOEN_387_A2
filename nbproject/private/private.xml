@@ -9,6 +9,9 @@
             <file>file:/C:/Programming/SOEN_387_A2/src/java/com/soen387/session/com/soen387/session/core/AddBookServlet.java</file>
             <file>file:/C:/Programming/SOEN_387_A2/src/java/com/soen387/repository/com/soen387/repository/core/JsonResourceFactory.java</file>
             <file>file:/C:/Programming/SOEN_387_A2/src/java/com/soen387/repository/com/soen387/repository/core/BookRepository.java</file>
+            <file>file:/C:/Programming/SOEN_387_A2/src/java/com/soen387/session/com/soen387/session/core/ServletNotFound.java</file>
+            <file>file:/C:/Programming/SOEN_387_A2/src/java/com/soen387/session/com/soen387/session/core/EditBookServlet.java</file>
+            <file>file:/C:/Programming/SOEN_387_A2/src/java/com/soen387/repository/com/soen387/repository/core/IBookRepository.java</file>
             <file>file:/C:/Programming/SOEN_387_A2/web/scripts/pages/addBook.js</file>
         </group>
     </open-files>

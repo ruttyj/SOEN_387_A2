@@ -20,7 +20,7 @@ public class BookRepository implements IBookRepository {
     Connection conn = null;
     Statement stmt = null;
 
-    String baseSelect = "id, title, description, isbn, author_fname, author_lname, publisher_company, publisher_address, LENGTH(cover_image_blob)>0 as hasCover";
+    String baseSelect = "id, title, description, isbn, author_fname, author_lname, publisher_company, publisher_address, cover_image_mime IS NOT NULL as hasCover";
 
     //Singleton Pattern Implementation
     private static IBookRepository IRepository = null;
@@ -151,14 +151,11 @@ public class BookRepository implements IBookRepository {
         
         try {
             System.out.println("Listing book with ISBN: " + isbn + "'s information...");
-            System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
 
-            System.out.println("Creating statement...");
             pstmt = conn.prepareStatement("SELECT "+this.baseSelect+" FROM books WHERE isbn=?");
             pstmt.setString(1, isbn);
             
-            System.out.println("Created preparedStatement...");
             res = pstmt.executeQuery();
 
             while (res.next()) {
@@ -233,8 +230,7 @@ public class BookRepository implements IBookRepository {
             conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
             conn.setAutoCommit(false);
             
-            String sql;
-            sql = "INSERT INTO books (title, description, isbn, author_fname, author_lname, publisher_company, publisher_address, id, cover_image_mime, cover_image_blob) VALUES (?,?,?,?,?,?,?,?, NULL, NULL)";
+            String sql = "INSERT INTO books (title, description, isbn, author_fname, author_lname, publisher_company, publisher_address, id, cover_image_mime, cover_image_blob) VALUES (?,?,?,?,?,?,?,?, NULL, NULL)";
             pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, book.getTitle());
             pstmt.setString(2, book.getDescription());
@@ -279,8 +275,7 @@ public class BookRepository implements IBookRepository {
             conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
             conn.setAutoCommit(false);
             System.out.println("Updating statement...");
-            String sql;
-            sql = "UPDATE books SET title = ?, description = ?, isbn = ?, author_fname = ?, author_lname = ?, publisher_company = ?, publisher_address = ? WHERE id = ?";
+            String sql = "UPDATE books SET title = ?, description = ?, isbn = ?, author_fname = ?, author_lname = ?, publisher_company = ?, publisher_address = ? WHERE id = ?";
             pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, book.getTitle());
             pstmt.setString(2, book.getDescription());
@@ -292,7 +287,6 @@ public class BookRepository implements IBookRepository {
             
             pstmt.setInt(8, id);
             
-            System.out.println("Created preparedStatement...");
             int affectedRows = pstmt.executeUpdate();
             conn.commit();
         } catch (SQLException ex) {
@@ -373,8 +367,6 @@ public class BookRepository implements IBookRepository {
             pstmt = conn.prepareStatement("SELECT cover_image_mime, cover_image_blob FROM books WHERE id=?");
             pstmt.setInt(1, id);
             
-            
-            System.out.println("Created preparedStatement...");
             res = pstmt.executeQuery();
 
             while (res.next()) {
@@ -408,18 +400,13 @@ public class BookRepository implements IBookRepository {
         PreparedStatement pstmt = null;
         try {
             System.out.println("Deleting book #" + id + "'s from the repository...");
-            System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
 
-            System.out.println("Creating statement...");
-            String sql;
-            sql = "delete FROM books WHERE id=?";
+            String sql = "delete FROM books WHERE id=?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, id);
-            System.out.println("Created preparedStatement...");
             pstmt.executeUpdate();
 
-            System.out.println("Book removed...");
         } catch (SQLException ex) {
             Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -441,14 +428,10 @@ public class BookRepository implements IBookRepository {
         PreparedStatement pstmt = null;
         try {
             System.out.println("Deleting all books from the repository...");
-            System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
 
-            System.out.println("Creating statement...");
-            String sql;
-            sql = "DELETE FROM books";
+            String sql = "DELETE FROM books";
             pstmt = conn.prepareStatement(sql);
-            System.out.println("Created preparedStatement...");
             pstmt.executeUpdate();
 
             System.out.println("All books removed...");

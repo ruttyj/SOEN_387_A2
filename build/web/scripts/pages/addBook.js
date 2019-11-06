@@ -119,7 +119,6 @@ Vue.component('app-page', {
             try {
                 console.log('Submitted & waiting');
                 
-                
                 var data = {
                     title: this.title,
                     isbn: this.isbn,
@@ -128,12 +127,8 @@ Vue.component('app-page', {
                     authorLastName: this.authorLastName,
                     publisherName: this.publisherName,
                     publisherAddress: this.publisherAddress,
+                    cover: this.file,
                 };
-
-                console.log(this.file);
-                if(this.file !== null)
-                    data.cover = this.file;
-
 
                 // Package multipart request 
                 const formData = new FormData();
@@ -165,25 +160,6 @@ Vue.component('app-page', {
             } catch(e){
                 console.log('failed', e);
             }
-        },
-
-
-        resetRawFileInput(){
-            this.$refs.fileInput.files = null;
-            this.$refs.fileInput.value = '';
-        },
-        onFileChange(){
-            const fileInput = this.$refs.fileInput;
-            var uploadedFiles = fileInput.files || [];
-
-            // Collect files into component
-            var result = null;
-            if(uploadedFiles.length)
-                result = uploadedFiles[0];
-            this.file = result;
-
-            // Clear files from raw input
-            this.resetRawFileInput();
         },
     }
 });

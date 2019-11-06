@@ -70,12 +70,32 @@ Vue.component('app-page', {
                                 />
 
                                 <!-- Cover Photo -->
-                                <v-file-input 
-                                    prepend-icon="attach_file" 
-                                    label="Cover Image" 
-                                    ref="converImageFile" 
-                                    v-model="coverFile" 
-                                />
+                                
+                                <template>
+                                    <v-hover v-if="largeCoverUrl !== null && !clearCover">
+                                        <template v-slot:default="{ hover }">
+                                            <v-card class="mx-auto">
+                                                <v-img :src="largeCoverUrl" contain aspect-ratio="3"></v-img>
+                                        
+                                                <v-fade-transition>
+                                                    <v-overlay v-if="hover"
+                                                        absolute
+                                                        color="#1565c0"
+                                                    >
+                                                        <v-btn @click="toggleClearImage(true)">Clear Image</v-btn>
+                                                    </v-overlay>
+                                                </v-fade-transition>
+                                            </v-card>
+                                        </template>
+                                    </v-hover>
+                                    <v-file-input 
+                                        v-else
+                                        prepend-icon="attach_file" 
+                                        label="Cover Image" 
+                                        v-model="file" 
+                                    />
+                                </template>
+                               
                                
                             </v-form>
                         </v-card-text>
@@ -88,8 +108,22 @@ Vue.component('app-page', {
                     </v-card>
                 </v-col>
             </v-row>
+
+
+
+            <v-snackbar v-model="snackbarShowing" :top="true" :timeout="3000"  >
+                {{ snackbarText }}
+                <v-btn dark text @click="snackbarShowing = false" >
+                    Close
+                </v-btn>
+            </v-snackbar>
+
+
         </v-container>`,
     data: () => ({
+        snackbarShowing: false,
+        snackbarText: '',
+
         id: '',
         title: '',
         isbn: '',
@@ -99,7 +133,9 @@ Vue.component('app-page', {
         publisherName: '',
         publisherAddress: '',
         largeCoverUrl: null,
-        coverFile: null,
+        file: null,
+        clearCover: false,
+        newCover: false,
         errors: {},
     }),
     props:{
@@ -156,6 +192,22 @@ Vue.component('app-page', {
         }
     },
     methods: {
+        toggleClearImage(val){
+            var newVal;
+            if(typeof(val) !== 'undefined'){
+                newVal = val;
+            } else {
+                newVal = !this.clearCover;
+            }
+
+            if(newVal){
+                this.clearCover = true;
+                this.file = null;
+            } else {
+                this.clearCover = false;
+            }
+        },
+
         resetErrorForField(field){
             if(typeof(this.errors[field]) !== 'undefined' && this.errors[field] !== null){
                 this.$set(this.errors, field, null);
@@ -169,29 +221,40 @@ Vue.component('app-page', {
             return result;
         },
         async onSubmit(){
-
             try {
                 console.log('Submitted & waiting');
+
+                var data = {
+                    id: this.id,
+                    title: this.title,
+                    isbn: this.isbn,
+                    description: this.description,
+                    authorFirstName: this.authorFirstName,
+                    authorLastName: this.authorLastName,
+                    publisherName: this.publisherName,
+                    publisherAddress: this.publisherAddress,
+                    cover: this.file,
+                    clearCover: this.clearCover,
+                };
+    
+                // Package multipart request 
+                const formData = new FormData();
+                Object.keys(data).map(key => {
+                    formData.append(key, data[key]);
+                })
+    
                 var response = await axios({
                     method: 'post',
                     url: 'editBook',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Content-Type': 'multipart/form-data',
                     },
-                    data: simpleQueryString.stringify({
-                        id: this.id,
-                        title: this.title,
-                        isbn: this.isbn,
-                        description: this.description,
-                        authorFirstName: this.authorFirstName,
-                        authorLastName: this.authorLastName,
-                        publisherName: this.publisherName,
-                        publisherAddress: this.publisherAddress,
-                    }),
+                    data: formData,
                 });
 
                 if(response.data.status == 'success'){
-                    alert("Save Sucessfull");
+                    this.snackbarText = "Sucessfully Saved Book";
+                    this.snackbarShowing = true;
                 } else if(typeof(response.data.errors) !== 'undefined'){
                     this.errors = response.data.errors;
                 } 

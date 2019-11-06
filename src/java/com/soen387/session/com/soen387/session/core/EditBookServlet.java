@@ -6,9 +6,13 @@ import com.soen387.repository.com.soen387.repository.core.Book;
 import com.soen387.repository.com.soen387.repository.core.Author;
 import com.soen387.repository.com.soen387.repository.core.JsonResourceFactory;
 import com.soen387.repository.com.soen387.repository.core.Publisher;
+import com.soen387.repository.com.soen387.repository.core.CoverImage;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.Part;
+import java.io.*;
+
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -21,13 +25,13 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.*;
 
 /**
  *
  * @author Jordan Rutty
  */
 @WebServlet("/editBook")
+@MultipartConfig(maxFileSize=1024*1024*50)
 public class EditBookServlet extends BaseProtectedPage {
     
     public void doDisplayBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -113,6 +117,9 @@ public class EditBookServlet extends BaseProtectedPage {
             f = "publisherAddress";
             String bookPublisherAddress = request.getParameter(f) != null ? request.getParameter(f) : "";
             
+            f = "clearCover";
+            boolean clearCover = Boolean.parseBoolean(request.getParameter(f) != null ? request.getParameter(f) : "");
+            
             
             boolean valid = true;
             Book existingIsbnBook = bookRepo.getBookInfo(bookIsbn);
@@ -132,6 +139,9 @@ public class EditBookServlet extends BaseProtectedPage {
                 message = "Error book does not exist.";
             }
             
+            
+            
+           
                
             // If passes validation
             if(valid){
@@ -151,6 +161,24 @@ public class EditBookServlet extends BaseProtectedPage {
 
                 bookRepo.updateBookInfo(id, book);
                 
+                if(clearCover){
+                    bookRepo.clearCoverImage(id);
+                } 
+                
+                
+                Part filePart = request.getPart("cover");
+                CoverImage cover = null;
+                if (filePart != null) {
+                    cover = new CoverImage();
+                    InputStream inputStream = filePart.getInputStream();
+                    cover.setMime(filePart.getContentType());
+                    cover.setBlob(inputStream);
+                }
+                if(cover != null){
+                    bookRepo.setCoverImage(id, cover);
+                }
+            
+            
                 result.put("status", "success");
                 result.put("message", "Sucessfully updated new book.");
                

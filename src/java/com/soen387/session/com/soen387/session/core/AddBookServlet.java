@@ -7,12 +7,6 @@ import com.soen387.repository.com.soen387.repository.core.Author;
 import com.soen387.repository.com.soen387.repository.core.Publisher;
 import com.soen387.repository.com.soen387.repository.core.CoverImage;
 
-
-
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,10 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Part;
-import java.net.URLConnection;
 import java.io.InputStream;
 
-import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
