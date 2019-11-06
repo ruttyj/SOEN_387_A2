@@ -73,8 +73,8 @@ Vue.component('app-page', {
                                 <v-file-input 
                                     prepend-icon="attach_file" 
                                     label="Cover Image" 
-                                    ref="converImageFile" 
-                                    v-model="coverFile" 
+                                    ref="fileInput" 
+                                    v-model="file"
                                 />
                                
                             </v-form>
@@ -98,7 +98,7 @@ Vue.component('app-page', {
         publisherName: 'some publisherName',
         publisherAddress: 'some publisherAddress',
         largeCoverUrl: null,
-        coverFile: null,
+        file: null,
         errors: {},
     }),
     methods: {
@@ -118,21 +118,36 @@ Vue.component('app-page', {
 
             try {
                 console.log('Submitted & waiting');
+                
+                
+                var data = {
+                    title: this.title,
+                    isbn: this.isbn,
+                    description: this.description,
+                    authorFirstName: this.authorFirstName,
+                    authorLastName: this.authorLastName,
+                    publisherName: this.publisherName,
+                    publisherAddress: this.publisherAddress,
+                };
+
+                console.log(this.file);
+                if(this.file !== null)
+                    data.cover = this.file;
+
+
+                // Package multipart request 
+                const formData = new FormData();
+                Object.keys(data).map(key => {
+                    formData.append(key, data[key]);
+                })
+
                 var response = await axios({
                     method: 'post',
                     url: 'addBook',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Content-Type': 'multipart/form-data',
                     },
-                    data: simpleQueryString.stringify({
-                        title: this.title,
-                        isbn: this.isbn,
-                        description: this.description,
-                        authorFirstName: this.authorFirstName,
-                        authorLastName: this.authorLastName,
-                        publisherName: this.publisherName,
-                        publisherAddress: this.publisherAddress,
-                    }),
+                    data: formData,
                 });
 
                 if(response.data.status == 'success'){
@@ -150,6 +165,25 @@ Vue.component('app-page', {
             } catch(e){
                 console.log('failed', e);
             }
-        }
+        },
+
+
+        resetRawFileInput(){
+            this.$refs.fileInput.files = null;
+            this.$refs.fileInput.value = '';
+        },
+        onFileChange(){
+            const fileInput = this.$refs.fileInput;
+            var uploadedFiles = fileInput.files || [];
+
+            // Collect files into component
+            var result = null;
+            if(uploadedFiles.length)
+                result = uploadedFiles[0];
+            this.file = result;
+
+            // Clear files from raw input
+            this.resetRawFileInput();
+        },
     }
 });

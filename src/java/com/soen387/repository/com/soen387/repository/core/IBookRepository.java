@@ -22,7 +22,11 @@ public interface IBookRepository {
 
     public void updateBookInfo(int id, Book book); 
     
-    public void setCoverImage();
+    public boolean setCoverImage(int id, CoverImage cover);
+    
+    public boolean clearCoverImage(int id);
+    
+    public CoverImage getCoverImage(int id);
 
     public void deleteBook(int id);
 

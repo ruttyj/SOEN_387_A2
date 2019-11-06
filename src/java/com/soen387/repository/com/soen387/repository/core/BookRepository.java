@@ -9,7 +9,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 /**
  *
  * @author Louis-Simon
@@ -18,25 +17,34 @@ import java.util.logging.Logger;
 public class BookRepository implements IBookRepository {
 
     //JDBC Setup
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/demo";
-
     Connection conn = null;
     Statement stmt = null;
 
-    static final String USER = "root";
-    static final String PASS = "root";
+    String baseSelect = "id, title, description, isbn, author_fname, author_lname, publisher_company, publisher_address, LENGTH(cover_image_blob)>0 as hasCover";
 
     //Singleton Pattern Implementation
     private static IBookRepository IRepository = null;
 
     private BookRepository() {
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
         } catch (Exception ex) {
         }
     }
 
+    
+    protected String getDbHost(){
+        return AppConfig.getInstance().getDbHost();
+    }
+    
+    protected String getDbUser(){
+        return AppConfig.getInstance().getDbUser();
+    }
+    
+    protected String getDbPass(){
+        return AppConfig.getInstance().getDbPassword();
+    }
+    
     // SecurityContext can be used to limit the users interaction with the repository based on permissions (which dont exis't in this project)
     public static IBookRepository getInstance(SecurityContext securityContext) {
         if(securityContext == null)
@@ -74,9 +82,9 @@ public class BookRepository implements IBookRepository {
         ResultSet res = null;
         Statement stmt = null;
         try {
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
             stmt = conn.createStatement();
-            res = stmt.executeQuery("SELECT * FROM books");
+            res = stmt.executeQuery("SELECT "+this.baseSelect+" FROM books");
             while (res.next()) {
                 results.add(this.makeBookFromRow(res));
             }
@@ -104,8 +112,8 @@ public class BookRepository implements IBookRepository {
         PreparedStatement pstmt = null;
         try {
             System.out.println("Listing book #" + id + "'s information...");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            pstmt = conn.prepareStatement("SELECT * FROM books WHERE id=?");
+            conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
+            pstmt = conn.prepareStatement("SELECT "+this.baseSelect+" FROM books WHERE id=?");
             pstmt.setInt(1, id);
             res = pstmt.executeQuery();
             while (res.next()) {
@@ -120,8 +128,8 @@ public class BookRepository implements IBookRepository {
                 if (res != null) {
                     res.close();
                 }
-                if (stmt != null) {
-                    stmt.close();
+                if (pstmt != null) {
+                    pstmt.close();
                 }
                 if (conn != null) {
                     conn.close();
@@ -144,12 +152,11 @@ public class BookRepository implements IBookRepository {
         try {
             System.out.println("Listing book with ISBN: " + isbn + "'s information...");
             System.out.println("Connecting to database...");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
 
             System.out.println("Creating statement...");
-            pstmt = conn.prepareStatement("SELECT * FROM books WHERE isbn=?");
+            pstmt = conn.prepareStatement("SELECT "+this.baseSelect+" FROM books WHERE isbn=?");
             pstmt.setString(1, isbn);
-            
             
             System.out.println("Created preparedStatement...");
             res = pstmt.executeQuery();
@@ -166,8 +173,8 @@ public class BookRepository implements IBookRepository {
                 if (res != null) {
                     res.close();
                 }
-                if (stmt != null) {
-                    stmt.close();
+                if (pstmt != null) {
+                    pstmt.close();
                 }
                 if (conn != null) {
                     conn.close();
@@ -219,11 +226,11 @@ public class BookRepository implements IBookRepository {
     @Override
     public int addNewBook(Book book) {
         int id = 1;
-        PreparedStatement pstmt;
+        PreparedStatement pstmt = null;
         
         try {
             System.out.println("Adding new book to repository...");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
             conn.setAutoCommit(false);
             
             String sql;
@@ -248,8 +255,8 @@ public class BookRepository implements IBookRepository {
             Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (stmt != null) {
-                    stmt.close();
+                if (pstmt != null) {
+                    pstmt.close();
                 }
                 if (conn != null) {
                     conn.close();
@@ -269,7 +276,7 @@ public class BookRepository implements IBookRepository {
         try {
             System.out.println("Adding new book to repository...");
             System.out.println("Connecting to database...");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
             conn.setAutoCommit(false);
             System.out.println("Updating statement...");
             String sql;
@@ -292,8 +299,8 @@ public class BookRepository implements IBookRepository {
             Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (stmt != null) {
-                    stmt.close();
+                if (pstmt != null) {
+                    pstmt.close();
                 }
                 if (conn != null) {
                     conn.close();
@@ -305,18 +312,104 @@ public class BookRepository implements IBookRepository {
         }
     }
 
+    
     @Override
-    public void setCoverImage() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean setCoverImage(int id, CoverImage cover){
+        PreparedStatement pstmt = null;
+        int affectedRows = 0;
+        try {
+            conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
+            conn.setAutoCommit(false);
+            String sql;
+            sql = "UPDATE books SET cover_image_mime = ?, cover_image_blob = ? WHERE id = ?";
+            pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            if(cover == null){
+                pstmt.setString(1, null);
+                pstmt.setNull(2, java.sql.Types.BLOB);
+            } else {
+                pstmt.setString(1, cover.getMime());
+                pstmt.setBlob(2, cover.getBlob());
+            }
+            
+            pstmt.setInt(3, id);
+            
+            affectedRows = pstmt.executeUpdate();
+            conn.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+        
+        return affectedRows != 0;
+    }
+    
+    
+    @Override
+    public boolean clearCoverImage(int id){
+        return this.setCoverImage(id, null);
     }
 
+    @Override
+    public CoverImage getCoverImage(int id){
+        CoverImage result = null;
+        
+        ResultSet res = null;
+        PreparedStatement pstmt = null;
+        
+        try {
+            conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
+
+            pstmt = conn.prepareStatement("SELECT cover_image_mime, cover_image_blob FROM books WHERE id=?");
+            pstmt.setInt(1, id);
+            
+            
+            System.out.println("Created preparedStatement...");
+            res = pstmt.executeQuery();
+
+            while (res.next()) {
+                result = this.makeCoverImageFromRow(res);
+                break;
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
     @Override
     public void deleteBook(int id) {
         PreparedStatement pstmt = null;
         try {
             System.out.println("Deleting book #" + id + "'s from the repository...");
             System.out.println("Connecting to database...");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
 
             System.out.println("Creating statement...");
             String sql;
@@ -331,8 +424,8 @@ public class BookRepository implements IBookRepository {
             Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (stmt != null) {
-                    stmt.close();
+                if (pstmt != null) {
+                    pstmt.close();
                 }
                 if (conn != null) {
                     conn.close();
@@ -349,7 +442,7 @@ public class BookRepository implements IBookRepository {
         try {
             System.out.println("Deleting all books from the repository...");
             System.out.println("Connecting to database...");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
 
             System.out.println("Creating statement...");
             String sql;
@@ -363,8 +456,8 @@ public class BookRepository implements IBookRepository {
             Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (stmt != null) {
-                    stmt.close();
+                if (pstmt != null) {
+                    pstmt.close();
                 }
                 if (conn != null) {
                     conn.close();
@@ -385,6 +478,7 @@ public class BookRepository implements IBookRepository {
             book.setTitle(res.getString("title"));            
             book.setDescription(res.getString("description"));
             book.setIsbn(res.getString("isbn"));
+            book.setHasCover(res.getBoolean("hasCover"));
 
             Author author = new Author();
             author.setFirstName(res.getString("author_fname"));            
@@ -399,5 +493,18 @@ public class BookRepository implements IBookRepository {
             Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
         } 
         return book;
+    }
+    
+    
+    protected CoverImage makeCoverImageFromRow(ResultSet res){
+        CoverImage cover = null;
+        try {
+            cover = new CoverImage();
+            cover.setMime(res.getString("cover_image_mime"));
+            cover.setBlob(res.getBlob("cover_image_blob").getBinaryStream());            
+        } catch (SQLException ex) {
+            Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        return cover;
     }
 }

@@ -5,6 +5,10 @@ import com.soen387.repository.com.soen387.repository.core.BookRepository;
 import com.soen387.repository.com.soen387.repository.core.Book;
 import com.soen387.repository.com.soen387.repository.core.Author;
 import com.soen387.repository.com.soen387.repository.core.Publisher;
+import com.soen387.repository.com.soen387.repository.core.CoverImage;
+
+
+
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,6 +19,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.Part;
+import java.net.URLConnection;
+import java.io.InputStream;
 
 import java.util.ArrayList;
 import org.json.simple.JSONArray;
@@ -27,6 +35,7 @@ import java.io.*;
  * @author Jordan Rutty
  */
 @WebServlet("/addBook")
+@MultipartConfig(maxFileSize=1024*1024*50)
 public class AddBookServlet extends BaseProtectedPage {
     
     public void doDisplayBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -93,6 +102,15 @@ public class AddBookServlet extends BaseProtectedPage {
             f = "publisherAddress";
             String bookPublisherAddress = request.getParameter(f) != null ? request.getParameter(f) : "";
             
+            Part filePart = request.getPart("cover");
+            CoverImage cover = null;
+            if (filePart != null) {
+                cover = new CoverImage();
+                InputStream inputStream = filePart.getInputStream();
+                cover.setMime(filePart.getContentType());
+                cover.setBlob(inputStream);
+            }
+            
             
             boolean valid = true;
             Book existingBook = bookRepo.getBookInfo(bookIsbn);
@@ -123,6 +141,10 @@ public class AddBookServlet extends BaseProtectedPage {
                 int newBookID = bookRepo.addNewBook(book);
 
                 if(newBookID != 0){
+
+                    if(cover != null){
+                        bookRepo.setCoverImage(newBookID, cover);
+                    }
                     result.put("status", "success");
                     result.put("id", newBookID);
                     result.put("message", "Sucessfully added new book.");

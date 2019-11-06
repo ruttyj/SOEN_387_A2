@@ -26,6 +26,7 @@ public class Book implements Serializable {
     private Author author;
     private Publisher publisher;
     
+    private boolean hasCover = false;
     
     public Book() {
         
@@ -100,6 +101,19 @@ public class Book implements Serializable {
         return this.publisher;
     }
 
+    
+    // Has Cover
+    public void setHasCover(boolean hasCover){
+        this.hasCover = hasCover;
+    }
+
+    public boolean getHasCover(){
+        return this.hasCover;
+    }
+
+    
+    
+    
     
     
     //===========AUTO-GENERATED NETBEANS STUFF

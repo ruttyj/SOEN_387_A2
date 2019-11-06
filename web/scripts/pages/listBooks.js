@@ -1,9 +1,9 @@
 // Register this component with VueJS
 Vue.component('app-page', {
     template: `
-        <v-container class="fill-height" >
+        <v-container class="fill-height align-start block">
             <h1>Welcome {{c_username}}!</h1>
-            <v-row align="center" justify="center" >
+            <v-row justify="center" align="start" >
                 <v-col cols="12" sm="12" md="12" >
                     <v-card class="elevation-12">
 
@@ -65,6 +65,11 @@ Vue.component('app-page', {
                                                 <v-img
                                                     v-if="item.cover && item.cover.thumbnailUrl"
                                                     :src="item.cover.thumbnailUrl"
+                                                    contain
+                                                />
+                                                <v-img
+                                                    v-else
+                                                    src="/assets/noImage.png"
                                                     contain
                                                 />
                                             </td>

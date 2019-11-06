@@ -14,9 +14,13 @@ public class AppConfig {
     // Comment switch chage the first line /*/ to //*/  or vice versa to change
     //*/ 
     private String userJsonFilePath = "C:\\Programming\\SOEN_387_A2\\users.JSON";
+    private String noImagePath = "C:\\Programming\\SOEN_387_A2\\noImage.png";
     /*/
     private String userJsonFilePath = "C:\\Users\\Louis-Simon\\Documents\\NetBeansProjects\\SOEN_387_A2\\users.JSON";
+    private String noImagePath = "C:\\Users\\Louis-Simon\\Documents\\NetBeansProjects\\SOEN_387_A2\\noImage.png";
     //*/
+    
+    
     
     private String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     private String DB_URL = "jdbc:mysql://localhost:3306/demo?autoReconnect=true&useSSL=false";
@@ -56,5 +60,10 @@ public class AppConfig {
     }
     public String getDbPassword(){
         return this.PASS;
+    }
+    
+    
+    public String getNoImagePath(){
+        return this.noImagePath;
     }
 }

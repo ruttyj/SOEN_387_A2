@@ -21,8 +21,13 @@ public class JsonResourceFactory {
             result.put("isbn", book.getIsbn());
 
             JSONObject cover = new JSONObject();
-            cover.put("largeUrl", "https://timedotcom.files.wordpress.com/2015/06/521811839-copy.jpg");
-            cover.put("thumbnailUrl", "https://timedotcom.files.wordpress.com/2015/06/521811839-copy.jpg");
+            if(book.getHasCover()){
+                cover.put("largeUrl", "cover?id="+book.getID());
+                cover.put("thumbnailUrl", "cover?id="+book.getID());
+            } else {
+                cover.put("largeUrl", null);
+                cover.put("thumbnailUrl", null);
+            }
             result.put("cover", cover);
             
             Author author = book.getAuthor();

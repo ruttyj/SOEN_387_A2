@@ -11,15 +11,36 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 /**
  *
  * @author Louis-Simon
  */
 @Entity
 public class CoverImage implements Serializable {
-
+    
+    private String mime;
+    private InputStream blob;
    
-   
+    public void setBlob(InputStream blob){
+        this.blob = blob;
+    }
+    
+    public InputStream getBlob(){
+        return this.blob;
+    }
+    
+    
+    public void setMime(String mime){
+        this.mime = mime;
+    }
+    
+    public String getMime(){
+        return this.mime;
+    }
     
 
 
