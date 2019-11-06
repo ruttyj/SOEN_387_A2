@@ -1,10 +1,12 @@
 package com.soen387.session.com.soen387.session.core;
 
 import com.soen387.repository.com.soen387.repository.core.SecurityContext;
+import com.soen387.repository.com.soen387.repository.core.Session;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -16,16 +18,24 @@ import org.json.simple.JSONObject;
  */
 public class BaseProtectedPage extends HttpServlet {
     
+    Session businessSession = null;
+    
+    public BaseProtectedPage(){
+        super();
+    }
     
     
-    protected boolean isLoggedIn(HttpSession session){
-        return session != null && session.getAttribute("user_id") != null;
+    protected boolean isLoggedIn(HttpServletRequest request){
+        if(businessSession == null){
+            businessSession = new Session(request);
+        }
+        return businessSession.isUserLoggedIn();
     }
     
     
     // Check to see if the user is logged in else redirect
-    protected boolean checkLoggedIn(HttpSession session, HttpServletResponse response) throws ServletException, IOException {
-        if(!this.isLoggedIn(session)){
+    protected boolean checkLoggedIn(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if(!this.isLoggedIn(request)){
             response.sendRedirect("/login");
             return false;
         }
@@ -33,8 +43,8 @@ public class BaseProtectedPage extends HttpServlet {
     }
     
     
-    protected boolean checkLoggedInResponse(HttpSession session, HttpServletResponse response) throws ServletException, IOException {
-        if(!this.isLoggedIn(session)){
+    protected boolean checkLoggedInResponse(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if(!this.isLoggedIn(request)){
             response.setStatus(401); // Unauthorized
             return false;
         }
@@ -43,7 +53,8 @@ public class BaseProtectedPage extends HttpServlet {
         
         
     
-    public JSONObject getUserJSON(HttpSession session){
+    public JSONObject getUserJSON(){
+        HttpSession session = businessSession.getHttpSession();
         JSONObject result = null;
         if(session.getAttribute("user_id") != null){
             result = new JSONObject();
@@ -53,9 +64,10 @@ public class BaseProtectedPage extends HttpServlet {
         return result;
     }
     
-    protected SecurityContext getSecurityContext(HttpSession session){
+    protected SecurityContext getSecurityContext(HttpServletRequest request){
         SecurityContext securityContext = null;
-        if(this.isLoggedIn(session)){
+        if(this.isLoggedIn(request)){
+            HttpSession session = request.getSession(true);
             securityContext = new SecurityContext();
             securityContext.setUserId((int)session.getAttribute("user_id"));
         }

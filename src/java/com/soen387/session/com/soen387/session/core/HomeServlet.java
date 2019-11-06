@@ -33,7 +33,7 @@ public class HomeServlet extends BaseProtectedPage {
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
-        if(this.checkLoggedIn(session, response)){
+        if(this.checkLoggedIn(request, response)){
             PrintWriter out = response.getWriter();
             
             //Get the required view
@@ -41,7 +41,7 @@ public class HomeServlet extends BaseProtectedPage {
             
             // Get page data
             JSONObject initalData = new JSONObject();
-            initalData.put("userData", getUserJSON(session));
+            initalData.put("userData", getUserJSON());
             
             // Book list
             JSONObject pageData = new JSONObject();

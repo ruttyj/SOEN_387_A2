@@ -30,10 +30,10 @@ public class ImageServlet extends BaseProtectedPage {
         OutputStream outputStream = response.getOutputStream();
 
         boolean isImageDisplayed = false;
-        if(this.isLoggedIn(session)){
+        if(this.isLoggedIn(request)){
             if(request.getParameter("id") != null){
                 int bookID = Integer.parseInt(request.getParameter("id"));
-                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(session));
+                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
                 CoverImage cover = bookRepo.getCoverImage(bookID);
                 
                 // Display Page

@@ -37,7 +37,7 @@ public class DeleteBooksServlet extends BaseProtectedPage {
         result.put("status", "failure");
         result.put("message", "");
            
-        if(this.checkLoggedInResponse(session, response)){
+        if(this.checkLoggedInResponse(request, response)){
             // Collect Ids into ArrayList
             ArrayList<Integer> deleteIds = new ArrayList<Integer>();
             if(request.getParameter("ids") != null){
@@ -51,7 +51,7 @@ public class DeleteBooksServlet extends BaseProtectedPage {
             }
             
             if(deleteIds.size() > 0){
-                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(session));
+                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
 
                 for(int i=0; i < deleteIds.size(); ++i){
                     bookRepo.deleteBook(deleteIds.get(i));

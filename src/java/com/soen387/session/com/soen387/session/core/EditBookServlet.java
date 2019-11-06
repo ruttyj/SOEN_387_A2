@@ -35,7 +35,7 @@ public class EditBookServlet extends BaseProtectedPage {
     
     public void doDisplayBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
-        if(this.checkLoggedIn(session, response)){
+        if(this.checkLoggedIn(request, response)){
             
             PrintWriter out = response.getWriter();
             
@@ -44,13 +44,13 @@ public class EditBookServlet extends BaseProtectedPage {
             
             // Get page data
             JSONObject initalData = new JSONObject();
-            initalData.put("userData", getUserJSON(session));
+            initalData.put("userData", getUserJSON());
             
             
             JSONObject pageData = new JSONObject();
             if(request.getParameter("id") != null){
                 int bookID = Integer.parseInt(request.getParameter("id"));
-                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(session));
+                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
                 Book book = bookRepo.getBookInfo(bookID);
                 
                 // Display Page
@@ -85,10 +85,10 @@ public class EditBookServlet extends BaseProtectedPage {
         result.put("message", "");
         String message = "";
            
-        if(this.checkLoggedInResponse(session, response)){
+        if(this.checkLoggedInResponse(request, response)){
             // Collect Ids into ArrayList
            
-            IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(session));
+            IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
 
             String f;
             

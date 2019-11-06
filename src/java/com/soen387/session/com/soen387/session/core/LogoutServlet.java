@@ -21,37 +21,12 @@ import javax.servlet.http.HttpSession;
  * @author Louis-Simon
  */
 @WebServlet(urlPatterns = {"/logout"})
-public class LogoutServlet extends HttpServlet {
+public class LogoutServlet extends BaseProtectedPage {
 
     protected void doAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //invalidate the session if exists
-        HttpSession session = request.getSession(true);
-        System.out.println("User=" + session.getAttribute("user"));
-        if (session != null) {
-            session.invalidate();
-        }
-        
-        Cookie sessionCookie = getSessionCookie(request);
-        if(sessionCookie != null){
-            sessionCookie.setMaxAge(0);
-        }
-        
+        businessSession.logout();
         response.sendRedirect("/logout.html");
-    }
-    
-    
-    protected Cookie getSessionCookie(HttpServletRequest request){
-        Cookie sessionCookie = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("JSESSIONID")) {
-                    sessionCookie = cookie;
-                    break;
-                }
-            }
-        }
-        return sessionCookie;
     }
     
     

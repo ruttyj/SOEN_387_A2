@@ -31,7 +31,7 @@ import java.io.*;
 public class ViewBookServlet extends BaseProtectedPage {
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
-        if(this.checkLoggedIn(session, response)){
+        if(this.checkLoggedIn(request, response)){
             
             PrintWriter out = response.getWriter();
             
@@ -40,21 +40,18 @@ public class ViewBookServlet extends BaseProtectedPage {
             
             // Get page data
             JSONObject initalData = new JSONObject();
-            initalData.put("userData", getUserJSON(session));
+            initalData.put("userData", getUserJSON());
             
             
             JSONObject pageData = new JSONObject();
             if(request.getParameter("id") != null){
                 int bookID = Integer.parseInt(request.getParameter("id"));
-                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(session));
+                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
                 Book book = bookRepo.getBookInfo(bookID);
                 
                 // Display Page
                 if(book != null){
-                    
                     pageData.put("book", JsonResourceFactory.makeBookResource(book));
-
-                    
                 } else {
                     pageData.put("message", "No Book Found");
                 }

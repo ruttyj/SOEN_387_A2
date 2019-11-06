@@ -21,11 +21,7 @@
                 <app-simple-header :is-sidebar-open.sync="isSidebarOpen" :user-data="userData"/></app-simple-header>
                 <v-content>
                     <div class="complete-center full-height">
-                        <div>
-                            <div class="http-status-code">404</div>
-                            <br/>
-                            <div class="center">You look lost, <a href="/home">Go home!</a></div>
-                        </div>
+                        <div class="http-status-code">404</div>
                     </div>
                 </v-content>
             </v-app>
