@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 /**
@@ -22,15 +21,36 @@ import java.io.InputStream;
 @Entity
 public class CoverImage implements Serializable {
     
+    private String name;
     private String mime;
-    private InputStream blob;
-   
-    public void setBlob(InputStream blob){
-        this.blob = blob;
+    private InputStream content = null;
+    private InputStream thumbContent = null; // Yes this is dumb but it's effective
+    
+    
+    public void setContent(InputStream content){
+        this.content = content;
     }
     
-    public InputStream getBlob(){
-        return this.blob;
+    public InputStream getContent(){
+        return this.content;
+    }
+    
+    
+    public void setThumbContent(InputStream thumbContent){
+        this.thumbContent = thumbContent;
+    }
+    
+    public InputStream getThumbContent(){
+        return this.thumbContent;
+    }
+    
+    
+    public void setName(String name){
+        this.name = name;
+    }
+    
+    public String getName(){
+        return this.name;
     }
     
     

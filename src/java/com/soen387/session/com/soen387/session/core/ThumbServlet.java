@@ -22,8 +22,8 @@ import java.io.*;
  *
  * @author Jordan Rutty
  */
-@WebServlet("/cover")
-public class ImageServlet extends BaseProtectedPage {
+@WebServlet("/thumb")
+public class ThumbServlet extends BaseProtectedPage {
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
@@ -38,10 +38,13 @@ public class ImageServlet extends BaseProtectedPage {
                 
                 // Display Page
                 if(cover != null){
-                    response.setContentType(cover.getMime());
-                    this.copyDataToOutputSteam(cover.getContent(), outputStream);
-                    isImageDisplayed = true;
-                }
+                    InputStream contents = cover.getThumbContent();
+                    if(contents != null){
+                        response.setContentType(cover.getMime());
+                        this.copyDataToOutputSteam(contents, outputStream);
+                        isImageDisplayed = true;
+                    }
+                } 
             }
         } 
         

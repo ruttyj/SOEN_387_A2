@@ -9,6 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.*;
 /**
  *
  * @author Louis-Simon
@@ -18,7 +19,6 @@ public class BookRepository implements IBookRepository {
 
     //JDBC Setup
     Connection conn = null;
-    Statement stmt = null;
 
     String baseSelect = "id, title, description, isbn, author_fname, author_lname, publisher_company, publisher_address, cover_image_mime IS NOT NULL as hasCover";
 
@@ -230,7 +230,7 @@ public class BookRepository implements IBookRepository {
             conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
             conn.setAutoCommit(false);
             
-            String sql = "INSERT INTO books (title, description, isbn, author_fname, author_lname, publisher_company, publisher_address, id, cover_image_mime, cover_image_blob) VALUES (?,?,?,?,?,?,?,?, NULL, NULL)";
+            String sql = "INSERT INTO books (title, description, isbn, author_fname, author_lname, publisher_company, publisher_address, id) VALUES (?,?,?,?,?,?,?,?)";
             pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, book.getTitle());
             pstmt.setString(2, book.getDescription());
@@ -315,17 +315,42 @@ public class BookRepository implements IBookRepository {
             conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
             conn.setAutoCommit(false);
             String sql;
-            sql = "UPDATE books SET cover_image_mime = ?, cover_image_blob = ? WHERE id = ?";
+            sql = "UPDATE books SET cover_image_name = ?, cover_image_mime = ?, cover_image_blob = ?, cover_image_thumb_blob = ? WHERE id = ?";
             pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             if(cover == null){
                 pstmt.setString(1, null);
-                pstmt.setNull(2, java.sql.Types.BLOB);
+                pstmt.setString(2, null);
+                pstmt.setNull(3, java.sql.Types.BLOB);
+                pstmt.setNull(4, java.sql.Types.BLOB);
             } else {
-                pstmt.setString(1, cover.getMime());
-                pstmt.setBlob(2, cover.getBlob());
+                
+                // Cone the input stream
+                InputStream content = cover.getContent();
+                InputStream imageContent = null;
+                InputStream thumbContent = null;
+                if(content != null){
+                    try{
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = content.read(buffer)) > -1 ) {
+                        baos.write(buffer, 0, len);
+                    }
+                    baos.flush();
+
+                    imageContent = new ByteArrayInputStream(baos.toByteArray()); 
+                    thumbContent = ImageManip.resizeImage(new ByteArrayInputStream(baos.toByteArray()), cover.getName(), 200); 
+                } catch(Exception ex){}
+
+                }
+
+                pstmt.setString(1, cover.getName());
+                pstmt.setString(2, cover.getMime());
+                pstmt.setBlob(3, imageContent);
+                pstmt.setBlob(4, thumbContent);
             }
             
-            pstmt.setInt(3, id);
+            pstmt.setInt(5, id);
             
             affectedRows = pstmt.executeUpdate();
             conn.commit();
@@ -364,7 +389,7 @@ public class BookRepository implements IBookRepository {
         try {
             conn = DriverManager.getConnection(this.getDbHost(), this.getDbUser(), this.getDbPass());
 
-            pstmt = conn.prepareStatement("SELECT cover_image_mime, cover_image_blob FROM books WHERE id=?");
+            pstmt = conn.prepareStatement("SELECT cover_image_mime, cover_image_name, cover_image_blob, cover_image_thumb_blob FROM books WHERE id=?");
             pstmt.setInt(1, id);
             
             res = pstmt.executeQuery();
@@ -482,10 +507,19 @@ public class BookRepository implements IBookRepository {
     protected CoverImage makeCoverImageFromRow(ResultSet res){
         CoverImage cover = null;
         try {
+            byte[] contentBytes = res.getBytes("cover_image_blob");
+            InputStream coverContent = contentBytes.length == 0 ? null : new ByteArrayInputStream(contentBytes);
+            
+            byte[] thumbContentBytes = res.getBytes("cover_image_thumb_blob");
+            InputStream thumbContent = thumbContentBytes.length == 0 ? null : new ByteArrayInputStream(thumbContentBytes);
+            
             cover = new CoverImage();
             cover.setMime(res.getString("cover_image_mime"));
-            cover.setBlob(res.getBlob("cover_image_blob").getBinaryStream());            
+            cover.setName(res.getString("cover_image_name"));
+            cover.setThumbContent(thumbContent); 
+            cover.setContent(coverContent);    
         } catch (SQLException ex) {
+            System.out.println("FFFFF");
             Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
         } 
         return cover;

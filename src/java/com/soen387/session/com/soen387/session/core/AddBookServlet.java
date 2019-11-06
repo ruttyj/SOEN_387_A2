@@ -21,6 +21,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.*;
+import java.nio.file.Paths;
 
 /**
  *
@@ -97,10 +98,18 @@ public class AddBookServlet extends BaseProtectedPage {
             Part filePart = request.getPart("cover");
             CoverImage cover = null;
             if (filePart != null) {
+                try {
+                String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                String fileMime = filePart.getContentType();
+                InputStream fileContents = filePart.getInputStream();
+
                 cover = new CoverImage();
-                InputStream inputStream = filePart.getInputStream();
-                cover.setMime(filePart.getContentType());
-                cover.setBlob(inputStream);
+                cover.setMime(fileMime);
+                cover.setContent(fileContents);
+                cover.setName(fileName);
+                } catch (Exception ex){
+                    
+                }
             }
             
             

@@ -15,7 +15,9 @@ CREATE TABLE `books` (
   `publisher_company` varchar(191) NOT NULL,
   `publisher_address` text NOT NULL,
   `cover_image_mime` varchar(191) DEFAULT NULL,
-  `cover_image_blob` longblob
+  `cover_image_name` varchar(191) DEFAULT NULL,
+  `cover_image_blob` longblob,
+  `cover_image_thumb_blob` longblob
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `books`

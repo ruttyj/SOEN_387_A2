@@ -8,9 +8,9 @@ import com.soen387.repository.com.soen387.repository.core.JsonResourceFactory;
 import com.soen387.repository.com.soen387.repository.core.Publisher;
 import com.soen387.repository.com.soen387.repository.core.CoverImage;
 
-
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Part;
+import java.nio.file.Paths;
 import java.io.*;
 
 
@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -169,10 +168,18 @@ public class EditBookServlet extends BaseProtectedPage {
                 Part filePart = request.getPart("cover");
                 CoverImage cover = null;
                 if (filePart != null) {
-                    cover = new CoverImage();
-                    InputStream inputStream = filePart.getInputStream();
-                    cover.setMime(filePart.getContentType());
-                    cover.setBlob(inputStream);
+                    try {
+                        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                        String fileMime = filePart.getContentType();
+                        InputStream fileContents = filePart.getInputStream();
+
+                        cover = new CoverImage();
+                        cover.setMime(fileMime);
+                        cover.setContent(fileContents);
+                        cover.setName(fileName);
+                    } catch(Exception ex){
+                        //was not a valid file
+                    }
                 }
                 if(cover != null){
                     bookRepo.setCoverImage(id, cover);
@@ -190,6 +197,7 @@ public class EditBookServlet extends BaseProtectedPage {
         response.setContentType("application/json");
         out.println(result);
     }
+    
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doEditBook(request, response);

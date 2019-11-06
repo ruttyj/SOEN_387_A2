@@ -23,7 +23,7 @@ public class JsonResourceFactory {
             JSONObject cover = new JSONObject();
             if(book.getHasCover()){
                 cover.put("largeUrl", "/cover?id="+book.getID());
-                cover.put("thumbnailUrl", "/cover?id="+book.getID());
+                cover.put("thumbnailUrl", "/thumb?id="+book.getID());
             } else {
                 cover.put("largeUrl", null);
                 cover.put("thumbnailUrl", null);
