@@ -12,24 +12,24 @@ import java.util.ArrayList;
  */
 public interface IBookRepository {
 
-    public ArrayList<Book> listAllBooks();
+    public ArrayList<Book> listAllBooks(Session session) throws RepositoryException;
 
-    public Book getBookInfo(int id);
+    public Book getBookInfo(Session session, int id) throws RepositoryException;
 
-    public Book getBookInfo(String isbn);
+    public Book getBookInfo(Session session, String isbn) throws RepositoryException;
 
-    public int addNewBook(Book book);
+    public int addNewBook(Session session, Book book) throws RepositoryException;
 
-    public void updateBookInfo(int id, Book book); 
+    public void updateBookInfo(Session session, int id, Book book) throws RepositoryException; 
     
-    public boolean setCoverImage(int id, CoverImage cover);
+    public boolean setCoverImage(Session session, int id, CoverImage cover) throws RepositoryException;
     
-    public boolean clearCoverImage(int id);
+    public boolean clearCoverImage(Session session, int id) throws RepositoryException;
     
-    public CoverImage getCoverImage(int id);
+    public CoverImage getCoverImage(Session session, int id) throws RepositoryException;
 
-    public void deleteBook(int id);
+    public void deleteBook(Session session, int id) throws RepositoryException;
 
-    public void deleteAllBooks();
+    public void deleteAllBooks(Session session) throws RepositoryException;
     
 }

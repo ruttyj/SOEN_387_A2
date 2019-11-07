@@ -23,6 +23,9 @@ import org.json.simple.JSONObject;
 
 import java.io.*;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Jordan Rutty
@@ -30,8 +33,7 @@ import java.io.*;
 @WebServlet("/viewBook")
 public class ViewBookServlet extends BaseProtectedPage {
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(true);
-        if(this.checkLoggedIn(request, response)){
+        if(this.checkLoggedInPage(request, response)){
             
             PrintWriter out = response.getWriter();
             
@@ -47,7 +49,13 @@ public class ViewBookServlet extends BaseProtectedPage {
             if(request.getParameter("id") != null){
                 int bookID = Integer.parseInt(request.getParameter("id"));
                 IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
-                Book book = bookRepo.getBookInfo(bookID);
+                Book book = null;
+                
+                try {
+                    book = bookRepo.getBookInfo(businessSession, bookID);
+                } catch( Exception ex){
+                    Logger.getLogger(AddBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+                } 
                 
                 // Display Page
                 if(book != null){

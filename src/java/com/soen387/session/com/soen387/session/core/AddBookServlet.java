@@ -7,6 +7,7 @@ import com.soen387.repository.com.soen387.repository.core.Author;
 import com.soen387.repository.com.soen387.repository.core.Publisher;
 import com.soen387.repository.com.soen387.repository.core.CoverImage;
 
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,6 +23,8 @@ import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -32,8 +35,7 @@ import java.nio.file.Paths;
 public class AddBookServlet extends BaseProtectedPage {
     
     public void doDisplayBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(true);
-        if(this.checkLoggedIn(request, response)){
+        if(this.checkLoggedInPage(request, response)){
             PrintWriter out = response.getWriter();
             
             //Get the required view
@@ -69,93 +71,95 @@ public class AddBookServlet extends BaseProtectedPage {
         if(this.checkLoggedInResponse(request, response)){
             // Collect Ids into ArrayList
            
-            
-            IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
+            try {
+                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
 
-            String f;
-            
-            f = "title";
-            String bookTitle = request.getParameter(f) != null ? request.getParameter(f) : "";
-            
-            f = "description";
-            String bookDescription = request.getParameter(f) != null ? request.getParameter(f) : "";
-            
-            f = "isbn";
-            String bookIsbn = request.getParameter(f) != null ? request.getParameter(f) : "";
-            
-            f = "authorFirstName";
-            String bookAuthorFirstName = request.getParameter(f) != null ? request.getParameter(f) : "";
-            
-            f = "authorLastName";
-            String bookAuthorLastName = request.getParameter(f) != null ? request.getParameter(f) : "";
-            
-            f = "publisherName";
-            String bookPublisherName = request.getParameter(f) != null ? request.getParameter(f) : "";
-            
-            f = "publisherAddress";
-            String bookPublisherAddress = request.getParameter(f) != null ? request.getParameter(f) : "";
-            
-            Part filePart = request.getPart("cover");
-            CoverImage cover = null;
-            if (filePart != null) {
-                try {
-                String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                String fileMime = filePart.getContentType();
-                InputStream fileContents = filePart.getInputStream();
+                String f;
 
-                cover = new CoverImage();
-                cover.setMime(fileMime);
-                cover.setContent(fileContents);
-                cover.setName(fileName);
-                } catch (Exception ex){
-                    
-                }
-            }
-            
-            
-            boolean valid = true;
-            Book existingBook = bookRepo.getBookInfo(bookIsbn);
-            if(existingBook != null){
-                valid = false;
-                JSONArray isbnErrors = new JSONArray();
-                isbnErrors.add("ISBN must be unique.");
-                errors.put("isbn", isbnErrors);
-            }
-               
-            // If passes validation
-            if(valid){
-                Book book = new Book();
-                book.setTitle(bookTitle);            
-                book.setDescription(bookDescription);
-                book.setIsbn(bookIsbn);
+                f = "title";
+                String bookTitle = request.getParameter(f) != null ? request.getParameter(f) : "";
 
-                Author author = new Author();
-                author.setFirstName(bookAuthorFirstName);            
-                author.setLastName(bookAuthorLastName);
-                book.setAuthor(author);
+                f = "description";
+                String bookDescription = request.getParameter(f) != null ? request.getParameter(f) : "";
 
-                Publisher publisher = new Publisher();
-                publisher.setName(bookPublisherName);
-                publisher.setAddress(bookPublisherAddress);
-                book.setPublisher(publisher);
+                f = "isbn";
+                String bookIsbn = request.getParameter(f) != null ? request.getParameter(f) : "";
 
-                int newBookID = bookRepo.addNewBook(book);
+                f = "authorFirstName";
+                String bookAuthorFirstName = request.getParameter(f) != null ? request.getParameter(f) : "";
 
-                if(newBookID != 0){
+                f = "authorLastName";
+                String bookAuthorLastName = request.getParameter(f) != null ? request.getParameter(f) : "";
 
-                    if(cover != null){
-                        bookRepo.setCoverImage(newBookID, cover);
+                f = "publisherName";
+                String bookPublisherName = request.getParameter(f) != null ? request.getParameter(f) : "";
+
+                f = "publisherAddress";
+                String bookPublisherAddress = request.getParameter(f) != null ? request.getParameter(f) : "";
+
+                Part filePart = request.getPart("cover");
+                CoverImage cover = null;
+                if (filePart != null) {
+                    try {
+                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                    String fileMime = filePart.getContentType();
+                    InputStream fileContents = filePart.getInputStream();
+
+                    cover = new CoverImage();
+                    cover.setMime(fileMime);
+                    cover.setContent(fileContents);
+                    cover.setName(fileName);
+                    } catch (Exception ex){
+
                     }
-                    result.put("status", "success");
-                    result.put("id", newBookID);
-                    result.put("message", "Sucessfully added new book.");
-                } else {
-                    result.put("message", "Failed to added new book.");
                 }
-            } else {
-                result.put("errors", errors);
-                result.put("message", "Error invalid fields");
-            }
+
+
+                boolean valid = true;
+                Book existingBook = bookRepo.getBookInfo(businessSession, bookIsbn);
+                if(existingBook != null){
+                    valid = false;
+                    JSONArray isbnErrors = new JSONArray();
+                    isbnErrors.add("ISBN must be unique.");
+                    errors.put("isbn", isbnErrors);
+                }
+
+                // If passes validation
+                if(valid){
+                    Book book = new Book();
+                    book.setTitle(bookTitle);            
+                    book.setDescription(bookDescription);
+                    book.setIsbn(bookIsbn);
+
+                    Author author = new Author();
+                    author.setFirstName(bookAuthorFirstName);            
+                    author.setLastName(bookAuthorLastName);
+                    book.setAuthor(author);
+
+                    Publisher publisher = new Publisher();
+                    publisher.setName(bookPublisherName);
+                    publisher.setAddress(bookPublisherAddress);
+                    book.setPublisher(publisher);
+
+                    int newBookID = bookRepo.addNewBook(businessSession, book);
+
+                    if(newBookID != 0){
+                        if(cover != null){
+                            bookRepo.setCoverImage(businessSession, newBookID, cover);
+                        }
+                        result.put("status", "success");
+                        result.put("id", newBookID);
+                        result.put("message", "Sucessfully added new book.");
+                    } else {
+                        result.put("message", "Failed to added new book.");
+                    }
+                } else {
+                    result.put("errors", errors);
+                    result.put("message", "Error invalid fields");
+                }
+            } catch( Exception ex){
+                Logger.getLogger(AddBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            } 
         }
         response.setContentType("application/json");
         out.println(result);

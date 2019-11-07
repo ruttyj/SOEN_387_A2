@@ -10,6 +10,12 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.*;
+
+
+
+
+
+
 /**
  *
  * @author Louis-Simon
@@ -77,7 +83,10 @@ public class BookRepository implements IBookRepository {
 
     
     @Override
-    public ArrayList<Book> listAllBooks() {
+    public ArrayList<Book> listAllBooks(Session session) throws RepositoryException {
+        if(!session.isUserLoggedIn())
+            throw new RepositoryException();
+        
         ArrayList<Book> results = new ArrayList<Book>();
         ResultSet res = null;
         Statement stmt = null;
@@ -106,7 +115,10 @@ public class BookRepository implements IBookRepository {
     }
 
     @Override
-    public Book getBookInfo(int id) {
+    public Book getBookInfo(Session session, int id) throws RepositoryException {
+        if(!session.isUserLoggedIn())
+            throw new RepositoryException();
+        
         Book result = null;
         ResultSet res = null;
         PreparedStatement pstmt = null;
@@ -143,7 +155,10 @@ public class BookRepository implements IBookRepository {
     }
 
     @Override
-    public Book getBookInfo(String isbn) {
+    public Book getBookInfo(Session session, String isbn) throws RepositoryException {
+        if(!session.isUserLoggedIn())
+            throw new RepositoryException();
+        
         Book result = null;
         
         ResultSet res = null;
@@ -187,7 +202,7 @@ public class BookRepository implements IBookRepository {
     
     
     
-    protected int getNextBookID(Connection conn) {
+    private int getNextBookID(Connection conn) {
         int id = 1;
         ResultSet res = null;
         Statement stmt = null;
@@ -221,7 +236,10 @@ public class BookRepository implements IBookRepository {
     
     
     @Override
-    public int addNewBook(Book book) {
+    public int addNewBook(Session session, Book book) throws RepositoryException {
+        if(!session.isUserLoggedIn())
+            throw new RepositoryException();
+        
         int id = 1;
         PreparedStatement pstmt = null;
         
@@ -267,7 +285,10 @@ public class BookRepository implements IBookRepository {
     }
     
     @Override
-    public void updateBookInfo(int id, Book book){
+    public void updateBookInfo(Session session, int id, Book book) throws RepositoryException{
+        if(!session.isUserLoggedIn())
+            throw new RepositoryException();
+        
         PreparedStatement pstmt = null;
         try {
             System.out.println("Adding new book to repository...");
@@ -308,7 +329,10 @@ public class BookRepository implements IBookRepository {
 
     
     @Override
-    public boolean setCoverImage(int id, CoverImage cover){
+    public boolean setCoverImage(Session session, int id, CoverImage cover) throws RepositoryException{
+        if(!session.isUserLoggedIn())
+            throw new RepositoryException();
+        
         PreparedStatement pstmt = null;
         int affectedRows = 0;
         try {
@@ -375,14 +399,16 @@ public class BookRepository implements IBookRepository {
     
     
     @Override
-    public boolean clearCoverImage(int id){
-        return this.setCoverImage(id, null);
+    public boolean clearCoverImage(Session session, int id) throws RepositoryException{
+        return this.setCoverImage(session, id, null);
     }
 
     @Override
-    public CoverImage getCoverImage(int id){
-        CoverImage result = null;
+    public CoverImage getCoverImage(Session session, int id) throws RepositoryException{
+        if(!session.isUserLoggedIn())
+            throw new RepositoryException();
         
+        CoverImage result = null;
         ResultSet res = null;
         PreparedStatement pstmt = null;
         
@@ -421,7 +447,10 @@ public class BookRepository implements IBookRepository {
     }
     
     @Override
-    public void deleteBook(int id) {
+    public void deleteBook(Session session, int id) throws RepositoryException {
+        if(!session.isUserLoggedIn())
+            throw new RepositoryException();
+        
         PreparedStatement pstmt = null;
         try {
             System.out.println("Deleting book #" + id + "'s from the repository...");
@@ -449,7 +478,10 @@ public class BookRepository implements IBookRepository {
     }
 
     @Override
-    public void deleteAllBooks() {
+    public void deleteAllBooks(Session session) throws RepositoryException {
+        if(!session.isUserLoggedIn())
+            throw new RepositoryException();
+        
         PreparedStatement pstmt = null;
         try {
             System.out.println("Deleting all books from the repository...");

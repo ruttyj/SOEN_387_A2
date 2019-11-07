@@ -23,6 +23,8 @@ import org.json.simple.JSONObject;
 
 import java.io.*;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Jordan Rutty
@@ -30,8 +32,6 @@ import java.io.*;
 @WebServlet("/deleteBooks")
 public class DeleteBooksServlet extends BaseProtectedPage {
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(true);
-        
         PrintWriter out = response.getWriter();
         JSONObject result = new JSONObject();
         result.put("status", "failure");
@@ -50,15 +50,19 @@ public class DeleteBooksServlet extends BaseProtectedPage {
                 }
             }
             
-            if(deleteIds.size() > 0){
-                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
+            try {
+                if(deleteIds.size() > 0){
+                    IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
 
-                for(int i=0; i < deleteIds.size(); ++i){
-                    bookRepo.deleteBook(deleteIds.get(i));
+                    for(int i=0; i < deleteIds.size(); ++i){
+                        bookRepo.deleteBook(businessSession, deleteIds.get(i));
+                    }
+                    result.put("status", "success");
+                    result.put("message", "Sucessfully Deleted " + deleteIds.size() + " " + (deleteIds.size() == 1 ? "item" : "items") + ".");
                 }
-                result.put("status", "success");
-                result.put("message", "Sucessfully Deleted " + deleteIds.size() + " " + (deleteIds.size() == 1 ? "item" : "items") + ".");
-            }
+            } catch( Exception ex){
+                Logger.getLogger(AddBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            } 
             
         }
         response.setContentType("application/json");

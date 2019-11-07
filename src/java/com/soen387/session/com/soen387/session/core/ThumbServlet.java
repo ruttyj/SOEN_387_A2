@@ -18,6 +18,10 @@ import javax.servlet.http.HttpSession;
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
 
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Jordan Rutty
@@ -34,7 +38,13 @@ public class ThumbServlet extends BaseProtectedPage {
             if(request.getParameter("id") != null){
                 int bookID = Integer.parseInt(request.getParameter("id"));
                 IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
-                CoverImage cover = bookRepo.getCoverImage(bookID);
+                
+                CoverImage cover = null;
+                try {
+                    cover = bookRepo.getCoverImage(businessSession, bookID);
+                } catch( Exception ex){
+                    Logger.getLogger(AddBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+                } 
                 
                 // Display Page
                 if(cover != null){

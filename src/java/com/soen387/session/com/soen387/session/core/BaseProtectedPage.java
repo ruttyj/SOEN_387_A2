@@ -29,12 +29,13 @@ public class BaseProtectedPage extends HttpServlet {
         if(businessSession == null){
             businessSession = new Session(request);
         }
+        System.out.println("businessSession.isUserLoggedIn() "+ businessSession.isUserLoggedIn());
         return businessSession.isUserLoggedIn();
     }
     
     
     // Check to see if the user is logged in else redirect
-    protected boolean checkLoggedIn(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected boolean checkLoggedInPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if(!this.isLoggedIn(request)){
             response.sendRedirect("/login");
             return false;
@@ -56,7 +57,7 @@ public class BaseProtectedPage extends HttpServlet {
     public JSONObject getUserJSON(){
         HttpSession session = businessSession.getHttpSession();
         JSONObject result = null;
-        if(session.getAttribute("user_id") != null){
+        if(session != null && session.getAttribute("user_id") != null){
             result = new JSONObject();
             result.put("id", session.getAttribute("user_id"));
             result.put("username", session.getAttribute("username"));

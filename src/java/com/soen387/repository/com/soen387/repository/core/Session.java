@@ -19,17 +19,19 @@ public class Session {
     private User currentUser = null;
     private HttpSession session = null;
     private String JSessionId = null;
-    private Cookie sessionCookie = null;
+    private HttpServletRequest request = null;
+    
+    
+    public Session(){
+        
+    }
+    
     
     public Session(HttpServletRequest request){
         session = request.getSession(true);
         JSessionId = findJSessionId(request);
-        sessionCookie = findSessionCookie(request);
+        this.request = request;
         detectLoggedInUser();
-    }
-    
-    public void setCurrentUser(User currentUser){
-        this.currentUser = currentUser;
     }
     
     public User getCurrentUser(){
@@ -41,14 +43,19 @@ public class Session {
     }
     
     protected void detectLoggedInUser(){
-        if(session != null && session.getAttribute("user_id") != null){
-            currentUser = new User();
-            currentUser.setId(Integer.parseInt(session.getAttribute("user_id").toString()));
-            currentUser.setUsername(session.getAttribute("username").toString());
+        if(this.currentUser == null){
+            if(session != null && this.request.isRequestedSessionIdValid() && session.getAttribute("user_id") != null){
+                this.currentUser = new User();
+                this.currentUser.setId(Integer.parseInt(session.getAttribute("user_id").toString()));
+                this.currentUser.setUsername(session.getAttribute("username").toString());
+            } else {
+                this.currentUser = null;
+            }
         }
     }
     
     public boolean isUserLoggedIn(){
+        this.detectLoggedInUser();
         return currentUser != null;
     }
     
@@ -80,13 +87,17 @@ public class Session {
     }
     
     
-    public void logout(){
-        HttpSession session = getHttpSession();
+    public void logout(HttpServletRequest request){
+        this.currentUser = null;
+        
+        HttpSession session = request.getSession();
         if (session != null) {
             session.invalidate();
-        }
-        if(sessionCookie != null){
-            sessionCookie.setMaxAge(0);
+            Cookie sessionCookie = this.findSessionCookie(request);
+            if(sessionCookie != null){
+                sessionCookie.setMaxAge(0);
+                System.out.println("setMaxAge 0 ");
+            }
         }
     }
     

@@ -24,6 +24,10 @@ import org.json.simple.JSONObject;
 import java.util.Enumeration;
 import java.io.*;
 
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Jordan Rutty
@@ -32,8 +36,7 @@ import java.io.*;
 public class HomeServlet extends BaseProtectedPage {
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(true);
-        if(this.checkLoggedIn(request, response)){
+        if(this.checkLoggedInPage(request, response)){
             PrintWriter out = response.getWriter();
             
             //Get the required view
@@ -46,19 +49,22 @@ public class HomeServlet extends BaseProtectedPage {
             // Book list
             JSONObject pageData = new JSONObject();
             JSONArray bookListJson = new JSONArray();
-            IBookRepository bookRepo = BookRepository.getInstance("context");
-            ArrayList<Book> allBooks = bookRepo.listAllBooks();
-            int i;
-            Book currentBook;
-            for(i = 0; i < allBooks.size(); ++i){
-                currentBook = allBooks.get(i);
-                if(currentBook != null)
-                    bookListJson.add(JsonResourceFactory.makeBookResource(currentBook));
-            }
+            try {
+                IBookRepository bookRepo = BookRepository.getInstance("context");
+                ArrayList<Book> allBooks = bookRepo.listAllBooks(businessSession);
+                int i;
+                Book currentBook;
+                for(i = 0; i < allBooks.size(); ++i){
+                    currentBook = allBooks.get(i);
+                    if(currentBook != null)
+                        bookListJson.add(JsonResourceFactory.makeBookResource(currentBook));
+                }
+            } catch( Exception ex){
+                Logger.getLogger(HomeServlet.class.getName()).log(Level.SEVERE, null, ex);
+            } 
             pageData.put("books", bookListJson);
             
             initalData.put("pageData", pageData);
-            initalData.put("pageDataCount", bookRepo.listAllBooks().size());
             
             
             // Inject data into view

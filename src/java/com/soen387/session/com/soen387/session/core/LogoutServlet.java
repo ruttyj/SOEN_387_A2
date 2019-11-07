@@ -6,6 +6,8 @@ package com.soen387.session.com.soen387.session.core;
  * and open the template in the editor.
  */
 
+import com.soen387.repository.com.soen387.repository.core.Session;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -21,11 +23,11 @@ import javax.servlet.http.HttpSession;
  * @author Louis-Simon
  */
 @WebServlet(urlPatterns = {"/logout"})
-public class LogoutServlet extends BaseProtectedPage {
+public class LogoutServlet extends HttpServlet {
 
     protected void doAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //invalidate the session if exists
-        businessSession.logout();
+        Session businessSession = new Session();
+        businessSession.logout(request);
         response.sendRedirect("/logout.html");
     }
     

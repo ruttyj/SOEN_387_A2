@@ -18,6 +18,9 @@ import javax.servlet.http.HttpSession;
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Jordan Rutty
@@ -26,7 +29,6 @@ import java.io.*;
 public class ImageServlet extends BaseProtectedPage {
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(true);
         OutputStream outputStream = response.getOutputStream();
 
         boolean isImageDisplayed = false;
@@ -34,7 +36,12 @@ public class ImageServlet extends BaseProtectedPage {
             if(request.getParameter("id") != null){
                 int bookID = Integer.parseInt(request.getParameter("id"));
                 IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
-                CoverImage cover = bookRepo.getCoverImage(bookID);
+                CoverImage cover = null;
+                try {
+                    cover = bookRepo.getCoverImage(businessSession, bookID);
+                } catch( Exception ex){
+                    Logger.getLogger(AddBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+                } 
                 
                 // Display Page
                 if(cover != null){

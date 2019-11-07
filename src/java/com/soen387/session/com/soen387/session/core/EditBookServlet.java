@@ -24,6 +24,8 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -34,8 +36,7 @@ import org.json.simple.JSONObject;
 public class EditBookServlet extends BaseProtectedPage {
     
     public void doDisplayBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(true);
-        if(this.checkLoggedIn(request, response)){
+        if(this.checkLoggedInPage(request, response)){
             
             PrintWriter out = response.getWriter();
             
@@ -49,16 +50,21 @@ public class EditBookServlet extends BaseProtectedPage {
             
             JSONObject pageData = new JSONObject();
             if(request.getParameter("id") != null){
-                int bookID = Integer.parseInt(request.getParameter("id"));
-                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
-                Book book = bookRepo.getBookInfo(bookID);
-                
-                // Display Page
-                if(book != null){
-                    pageData.put("book", JsonResourceFactory.makeBookResource(book));
-                } else {
-                    pageData.put("message", "No Book Found");
-                }
+                Book book = null;
+                try {
+                    int bookID = Integer.parseInt(request.getParameter("id"));
+                    IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
+                    book = bookRepo.getBookInfo(businessSession, bookID);
+
+                    // Display Page
+                    if(book != null){
+                        pageData.put("book", JsonResourceFactory.makeBookResource(book));
+                    } else {
+                        pageData.put("message", "No Book Found");
+                    }
+                } catch( Exception ex){
+                    Logger.getLogger(AddBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+                } 
             } else {
                 pageData.put("message", "No Book Specified");
             }
@@ -76,7 +82,6 @@ public class EditBookServlet extends BaseProtectedPage {
     
     
     public void doEditBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(true);
         
         PrintWriter out = response.getWriter();
         JSONObject result = new JSONObject();
@@ -121,75 +126,75 @@ public class EditBookServlet extends BaseProtectedPage {
             
             
             boolean valid = true;
-            Book existingIsbnBook = bookRepo.getBookInfo(bookIsbn);
-            if(existingIsbnBook != null){
-                if( existingIsbnBook.getID() != id){
-                    valid = false;
-                    JSONArray isbnErrors = new JSONArray();
-                    isbnErrors.add("ISBN must be unique.");
-                    errors.put("isbn", isbnErrors);
-                    message = "Error invalid fields.";
-                }
-            }
-            
-            Book book = bookRepo.getBookInfo(id);
-            if(book == null){
-                valid = false;
-                message = "Error book does not exist.";
-            }
-            
-            
-            
-           
-               
-            // If passes validation
-            if(valid){
-                book.setTitle(bookTitle);            
-                book.setDescription(bookDescription);
-                book.setIsbn(bookIsbn);
-
-                Author author = new Author();
-                author.setFirstName(bookAuthorFirstName);            
-                author.setLastName(bookAuthorLastName);
-                book.setAuthor(author);
-
-                Publisher publisher = new Publisher();
-                publisher.setName(bookPublisherName);
-                publisher.setAddress(bookPublisherAddress);
-                book.setPublisher(publisher);
-
-                bookRepo.updateBookInfo(id, book);
-                
-                if(clearCover){
-                    bookRepo.clearCoverImage(id);
-                } 
-                
-                
-                Part filePart = request.getPart("cover");
-                CoverImage cover = null;
-                if (filePart != null) {
-                    try {
-                        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                        String fileMime = filePart.getContentType();
-                        InputStream fileContents = filePart.getInputStream();
-
-                        cover = new CoverImage();
-                        cover.setMime(fileMime);
-                        cover.setContent(fileContents);
-                        cover.setName(fileName);
-                    } catch(Exception ex){
-                        //was not a valid file
+            try {
+                Book existingIsbnBook = bookRepo.getBookInfo(businessSession, bookIsbn);
+                if(existingIsbnBook != null){
+                    if( existingIsbnBook.getID() != id){
+                        valid = false;
+                        JSONArray isbnErrors = new JSONArray();
+                        isbnErrors.add("ISBN must be unique.");
+                        errors.put("isbn", isbnErrors);
+                        message = "Error invalid fields.";
                     }
                 }
-                if(cover != null){
-                    bookRepo.setCoverImage(id, cover);
+
+                Book book = bookRepo.getBookInfo(businessSession, id);
+                if(book == null){
+                    valid = false;
+                    message = "Error book does not exist.";
                 }
-            
-            
+
+
+                // If passes validation
+                if(valid){
+                    book.setTitle(bookTitle);            
+                    book.setDescription(bookDescription);
+                    book.setIsbn(bookIsbn);
+
+                    Author author = new Author();
+                    author.setFirstName(bookAuthorFirstName);            
+                    author.setLastName(bookAuthorLastName);
+                    book.setAuthor(author);
+
+                    Publisher publisher = new Publisher();
+                    publisher.setName(bookPublisherName);
+                    publisher.setAddress(bookPublisherAddress);
+                    book.setPublisher(publisher);
+
+                    bookRepo.updateBookInfo(businessSession, id, book);
+
+                    if(clearCover){
+                        bookRepo.clearCoverImage(businessSession, id);
+                    } 
+
+
+                    Part filePart = request.getPart("cover");
+                    CoverImage cover = null;
+                    if (filePart != null) {
+                        try {
+                            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                            String fileMime = filePart.getContentType();
+                            InputStream fileContents = filePart.getInputStream();
+
+                            cover = new CoverImage();
+                            cover.setMime(fileMime);
+                            cover.setContent(fileContents);
+                            cover.setName(fileName);
+                        } catch(Exception ex){
+                            //was not a valid file
+                        }
+                    }
+                    if(cover != null){
+                        bookRepo.setCoverImage(businessSession, id, cover);
+                    }
+                }
                 result.put("status", "success");
                 result.put("message", "Sucessfully updated new book.");
-               
-            } else {
+            } catch( Exception ex){
+                Logger.getLogger(AddBookServlet.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+            
+            if(!valid) {
                 result.put("errors", errors);
                 result.put("message", message);
             }
