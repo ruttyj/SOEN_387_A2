@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
  */
 public class BaseProtectedPage extends HttpServlet {
     
-    Session businessSession = null;
+    Session businessSession = null; // WARNING THIS OBJECT WILL PERSIST BETWEEN CALLS
     
     public BaseProtectedPage(){
         super();
@@ -26,11 +26,8 @@ public class BaseProtectedPage extends HttpServlet {
     
     
     protected boolean isLoggedIn(HttpServletRequest request){
-        if(businessSession == null){
-            businessSession = new Session(request);
-        }
-        System.out.println("businessSession.isUserLoggedIn() "+ businessSession.isUserLoggedIn());
-        return businessSession.isUserLoggedIn();
+        HttpSession session = request.getSession(true);
+        return session != null && session.getAttribute("user_id") != null;
     }
     
     

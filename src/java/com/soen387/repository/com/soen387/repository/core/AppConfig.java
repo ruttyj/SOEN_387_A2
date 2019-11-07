@@ -35,7 +35,6 @@ public class AppConfig {
 
     private AppConfig(){
         this.config = new Properties();
-        System.out.println("AppConfig");
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             InputStream input = classLoader.getResourceAsStream("com/soen387/repository/com/soen387/repository/core/config.properties");

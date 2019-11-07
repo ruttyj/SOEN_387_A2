@@ -33,7 +33,6 @@ public class JSONTest {
         byte[] digest = md.digest();
         String myHash = DatatypeConverter
                 .printHexBinary(digest);
-        //System.out.println(myHash);
         byte[] messageDigest;
 
         //JSON Stuff

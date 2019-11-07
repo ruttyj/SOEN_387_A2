@@ -33,6 +33,7 @@ public class LoginServlet extends BaseProtectedPage {
     
     // CONSULT user.JSON file to see user/pw
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        businessSession = new Session(request);
         PrintWriter out = response.getWriter();
         JSONObject JSONResponse = new JSONObject();
         JSONResponse.put("status", "failure");
@@ -68,6 +69,7 @@ public class LoginServlet extends BaseProtectedPage {
     
      // CONSULT user.JSON file to see user/pw
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        businessSession = new Session(request);
         if(this.isLoggedIn(request)){
             response.sendRedirect("/home");
         } else {

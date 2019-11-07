@@ -6,6 +6,7 @@ import com.soen387.repository.com.soen387.repository.core.BookRepository;
 import com.soen387.repository.com.soen387.repository.core.Book;
 import com.soen387.repository.com.soen387.repository.core.Author;
 import com.soen387.repository.com.soen387.repository.core.Publisher;
+import com.soen387.repository.com.soen387.repository.core.Session;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,6 +33,7 @@ import java.util.logging.Logger;
 @WebServlet("/deleteBooks")
 public class DeleteBooksServlet extends BaseProtectedPage {
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        businessSession = new Session(request);
         PrintWriter out = response.getWriter();
         JSONObject result = new JSONObject();
         result.put("status", "failure");

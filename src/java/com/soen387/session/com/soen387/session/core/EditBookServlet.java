@@ -7,6 +7,7 @@ import com.soen387.repository.com.soen387.repository.core.Author;
 import com.soen387.repository.com.soen387.repository.core.JsonResourceFactory;
 import com.soen387.repository.com.soen387.repository.core.Publisher;
 import com.soen387.repository.com.soen387.repository.core.CoverImage;
+import com.soen387.repository.com.soen387.repository.core.Session;
 
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Part;
@@ -36,6 +37,7 @@ import java.util.logging.Logger;
 public class EditBookServlet extends BaseProtectedPage {
     
     public void doDisplayBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        businessSession = new Session(request);
         if(this.checkLoggedInPage(request, response)){
             
             PrintWriter out = response.getWriter();
@@ -82,7 +84,7 @@ public class EditBookServlet extends BaseProtectedPage {
     
     
     public void doEditBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
+        businessSession = new Session(request);
         PrintWriter out = response.getWriter();
         JSONObject result = new JSONObject();
         JSONObject errors = new JSONObject();

@@ -6,6 +6,7 @@ import com.soen387.repository.com.soen387.repository.core.BookRepository;
 import com.soen387.repository.com.soen387.repository.core.Book;
 import com.soen387.repository.com.soen387.repository.core.Author;
 import com.soen387.repository.com.soen387.repository.core.Publisher;
+import com.soen387.repository.com.soen387.repository.core.Session;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,6 +34,7 @@ import java.util.logging.Logger;
 @WebServlet("/viewBook")
 public class ViewBookServlet extends BaseProtectedPage {
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        businessSession = new Session(request);
         if(this.checkLoggedInPage(request, response)){
             
             PrintWriter out = response.getWriter();

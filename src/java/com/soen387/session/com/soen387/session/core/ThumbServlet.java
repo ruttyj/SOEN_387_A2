@@ -4,6 +4,7 @@ import com.soen387.repository.com.soen387.repository.core.AppConfig;
 import com.soen387.repository.com.soen387.repository.core.IBookRepository;
 import com.soen387.repository.com.soen387.repository.core.BookRepository;
 import com.soen387.repository.com.soen387.repository.core.CoverImage;
+import com.soen387.repository.com.soen387.repository.core.Session;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,6 +31,7 @@ import java.util.logging.Logger;
 public class ThumbServlet extends BaseProtectedPage {
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        businessSession = new Session(request);
         HttpSession session = request.getSession(true);
         OutputStream outputStream = response.getOutputStream();
 

@@ -87,7 +87,7 @@ public class Session {
     }
     
     
-    public void logout(HttpServletRequest request){
+    public void logout(){
         this.currentUser = null;
         
         HttpSession session = request.getSession();

@@ -6,6 +6,7 @@ import com.soen387.repository.com.soen387.repository.core.Book;
 import com.soen387.repository.com.soen387.repository.core.Author;
 import com.soen387.repository.com.soen387.repository.core.Publisher;
 import com.soen387.repository.com.soen387.repository.core.JsonResourceFactory;
+import com.soen387.repository.com.soen387.repository.core.Session;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,6 +37,7 @@ import java.util.logging.Logger;
 public class HomeServlet extends BaseProtectedPage {
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        businessSession = new Session(request);
         if(this.checkLoggedInPage(request, response)){
             PrintWriter out = response.getWriter();
             
