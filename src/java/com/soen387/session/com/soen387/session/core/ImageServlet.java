@@ -37,7 +37,7 @@ public class ImageServlet extends BaseProtectedPage {
         if(this.isLoggedIn(request)){
             if(request.getParameter("id") != null){
                 int bookID = Integer.parseInt(request.getParameter("id"));
-                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
+                IBookRepository bookRepo = BookRepository.getInstance(getServletContext());
                 CoverImage cover = null;
                 try {
                     cover = bookRepo.getCoverImage(sessionBean, bookID);

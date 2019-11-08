@@ -48,7 +48,7 @@ public class ViewBookServlet extends BaseProtectedPage {
             JSONObject pageData = new JSONObject();
             if(request.getParameter("id") != null){
                 int bookID = Integer.parseInt(request.getParameter("id"));
-                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
+                IBookRepository bookRepo = BookRepository.getInstance(getServletContext());
                 Book book = null;
                 
                 try {

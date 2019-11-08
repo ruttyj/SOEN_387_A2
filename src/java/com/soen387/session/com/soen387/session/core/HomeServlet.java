@@ -51,7 +51,7 @@ public class HomeServlet extends BaseProtectedPage {
             JSONObject pageData = new JSONObject();
             JSONArray bookListJson = new JSONArray();
             try {
-                IBookRepository bookRepo = BookRepository.getInstance("context");
+                IBookRepository bookRepo = BookRepository.getInstance(getServletContext());
                 ArrayList<Book> allBooks = bookRepo.listAllBooks(sessionBean);
                 int i;
                 Book currentBook;

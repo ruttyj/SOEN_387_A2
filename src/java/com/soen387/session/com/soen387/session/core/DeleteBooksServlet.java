@@ -54,7 +54,7 @@ public class DeleteBooksServlet extends BaseProtectedPage {
             
             try {
                 if(deleteIds.size() > 0){
-                    IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
+                    IBookRepository bookRepo = BookRepository.getInstance(getServletContext());
 
                     for(int i=0; i < deleteIds.size(); ++i){
                         bookRepo.deleteBook(sessionBean, deleteIds.get(i));

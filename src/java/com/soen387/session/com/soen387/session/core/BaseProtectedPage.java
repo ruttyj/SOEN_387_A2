@@ -1,6 +1,5 @@
 package com.soen387.session.com.soen387.session.core;
 
-import com.soen387.repository.com.soen387.repository.core.SecurityContext;
 import com.soen387.repository.com.soen387.repository.core.Session;
 import com.soen387.repository.com.soen387.repository.core.User;
 import java.io.IOException;
@@ -76,16 +75,7 @@ public class BaseProtectedPage extends HttpServlet {
         }
         return result;
     }
-    
-    protected SecurityContext getSecurityContext(HttpServletRequest request){
-        SecurityContext securityContext = null;
-        if(this.isLoggedIn(request)){
-            HttpSession session = request.getSession(true);
-            securityContext = new SecurityContext();
-            securityContext.setUserId((int)session.getAttribute("user_id"));
-        }
-        return securityContext;
-    }
+   
     
     public class baseProtectedPage {
 

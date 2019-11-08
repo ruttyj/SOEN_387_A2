@@ -73,7 +73,7 @@ public class AddBookServlet extends BaseProtectedPage {
             // Collect Ids into ArrayList
            
             try {
-                IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
+                IBookRepository bookRepo = BookRepository.getInstance(getServletContext());
 
                 String f;
 

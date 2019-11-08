@@ -55,7 +55,7 @@ public class EditBookServlet extends BaseProtectedPage {
                 Book book = null;
                 try {
                     int bookID = Integer.parseInt(request.getParameter("id"));
-                    IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
+                    IBookRepository bookRepo = BookRepository.getInstance(getServletContext());
                     book = bookRepo.getBookInfo(sessionBean, bookID);
 
                     // Display Page
@@ -95,7 +95,7 @@ public class EditBookServlet extends BaseProtectedPage {
         if(this.checkLoggedInResponse(request, response)){
             // Collect Ids into ArrayList
            
-            IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
+            IBookRepository bookRepo = BookRepository.getInstance(getServletContext());
 
             String f;
             
