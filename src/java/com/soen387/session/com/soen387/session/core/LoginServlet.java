@@ -6,7 +6,6 @@ package com.soen387.session.com.soen387.session.core;
  * and open the template in the editor.
  */
 
-import com.soen387.repository.com.soen387.repository.core.HashCheck;
 import com.soen387.repository.com.soen387.repository.core.User;
 import com.soen387.repository.com.soen387.repository.core.Session;
 
@@ -16,7 +15,6 @@ import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -33,7 +31,11 @@ public class LoginServlet extends BaseProtectedPage {
     
     // CONSULT user.JSON file to see user/pw
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
+        HttpSession httpSession= request.getSession(true);
+        Session sessionBean = this.getSessionBean(request);
+        if(sessionBean == null)
+            sessionBean = new Session();
+        
         PrintWriter out = response.getWriter();
         JSONObject JSONResponse = new JSONObject();
         JSONResponse.put("status", "failure");
@@ -47,7 +49,13 @@ public class LoginServlet extends BaseProtectedPage {
                 String username = request.getParameter("user");
                 String pw = request.getParameter("pw");
 
-                if(businessSession.login(username, pw)){
+                if(sessionBean.login(username, pw)){
+                    User user = sessionBean.getCurrentUser();
+                    httpSession.setMaxInactiveInterval(30 * 60);
+                    httpSession.setAttribute("sessionBean", sessionBean);
+                    httpSession.setAttribute("user_id", user.getId());
+                    httpSession.setAttribute("username", user.getUsername()); 
+            
                     JSONResponse.put("status", "success");
                     JSONResponse.put("message", "You have sucessfully logged in!");
                 } else {
@@ -69,7 +77,6 @@ public class LoginServlet extends BaseProtectedPage {
     
      // CONSULT user.JSON file to see user/pw
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
         if(this.isLoggedIn(request)){
             response.sendRedirect("/home");
         } else {

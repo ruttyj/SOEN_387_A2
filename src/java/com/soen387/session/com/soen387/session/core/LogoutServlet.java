@@ -26,13 +26,29 @@ import javax.servlet.http.HttpSession;
 public class LogoutServlet extends BaseProtectedPage {
 
     protected void doAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
-        businessSession.logout();
+        
+        HttpSession httpSession = request.getSession(true);
+        Session sessionBean = (Session)httpSession.getAttribute("sessionBean");
+        if(sessionBean != null){
+            if(sessionBean.isUserLoggedIn()){
+                sessionBean.logout();
+                if (httpSession != null) {
+                    httpSession.invalidate();
+                    Cookie sessionCookie = this.findSessionCookie(request);
+                    if(sessionCookie != null){
+                        sessionCookie.setMaxAge(0);
+                        System.out.println("setMaxAge 0 ");
+                    }
+                }
+            }
+        }
         
         response.sendRedirect("/logout.html");
     }
     
-    protected Cookie getSessionCookie(HttpServletRequest request){
+  
+    
+    protected Cookie findSessionCookie(HttpServletRequest request){
         Cookie sessionCookie = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {

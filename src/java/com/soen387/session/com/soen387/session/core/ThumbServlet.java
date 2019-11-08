@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class ThumbServlet extends BaseProtectedPage {
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
+        Session sessionBean = this.getSessionBean(request);
         HttpSession session = request.getSession(true);
         OutputStream outputStream = response.getOutputStream();
 
@@ -43,7 +43,7 @@ public class ThumbServlet extends BaseProtectedPage {
                 
                 CoverImage cover = null;
                 try {
-                    cover = bookRepo.getCoverImage(businessSession, bookID);
+                    cover = bookRepo.getCoverImage(sessionBean, bookID);
                 } catch( Exception ex){
                     Logger.getLogger(AddBookServlet.class.getName()).log(Level.SEVERE, null, ex);
                 } 

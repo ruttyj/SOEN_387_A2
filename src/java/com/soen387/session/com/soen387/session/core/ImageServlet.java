@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class ImageServlet extends BaseProtectedPage {
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
+        Session sessionBean = this.getSessionBean(request);
         OutputStream outputStream = response.getOutputStream();
 
         boolean isImageDisplayed = false;
@@ -40,7 +40,7 @@ public class ImageServlet extends BaseProtectedPage {
                 IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
                 CoverImage cover = null;
                 try {
-                    cover = bookRepo.getCoverImage(businessSession, bookID);
+                    cover = bookRepo.getCoverImage(sessionBean, bookID);
                 } catch( Exception ex){
                     Logger.getLogger(AddBookServlet.class.getName()).log(Level.SEVERE, null, ex);
                 } 

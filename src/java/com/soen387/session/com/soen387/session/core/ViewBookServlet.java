@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 @WebServlet("/viewBook")
 public class ViewBookServlet extends BaseProtectedPage {
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
+        Session sessionBean = this.getSessionBean(request);
         if(this.checkLoggedInPage(request, response)){
             
             PrintWriter out = response.getWriter();
@@ -44,7 +44,7 @@ public class ViewBookServlet extends BaseProtectedPage {
             
             // Get page data
             JSONObject initalData = new JSONObject();
-            initalData.put("userData", getUserJSON());
+            initalData.put("userData", getUserJSON(request));
             
             
             JSONObject pageData = new JSONObject();
@@ -54,7 +54,7 @@ public class ViewBookServlet extends BaseProtectedPage {
                 Book book = null;
                 
                 try {
-                    book = bookRepo.getBookInfo(businessSession, bookID);
+                    book = bookRepo.getBookInfo(sessionBean, bookID);
                 } catch( Exception ex){
                     Logger.getLogger(AddBookServlet.class.getName()).log(Level.SEVERE, null, ex);
                 } 

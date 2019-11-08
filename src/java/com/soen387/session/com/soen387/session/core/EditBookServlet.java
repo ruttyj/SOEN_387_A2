@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 public class EditBookServlet extends BaseProtectedPage {
     
     public void doDisplayBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
+        Session sessionBean = this.getSessionBean(request);
         if(this.checkLoggedInPage(request, response)){
             
             PrintWriter out = response.getWriter();
@@ -47,7 +47,7 @@ public class EditBookServlet extends BaseProtectedPage {
             
             // Get page data
             JSONObject initalData = new JSONObject();
-            initalData.put("userData", getUserJSON());
+            initalData.put("userData", getUserJSON(request));
             
             
             JSONObject pageData = new JSONObject();
@@ -56,7 +56,7 @@ public class EditBookServlet extends BaseProtectedPage {
                 try {
                     int bookID = Integer.parseInt(request.getParameter("id"));
                     IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
-                    book = bookRepo.getBookInfo(businessSession, bookID);
+                    book = bookRepo.getBookInfo(sessionBean, bookID);
 
                     // Display Page
                     if(book != null){
@@ -84,7 +84,7 @@ public class EditBookServlet extends BaseProtectedPage {
     
     
     public void doEditBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
+        Session sessionBean = this.getSessionBean(request);
         PrintWriter out = response.getWriter();
         JSONObject result = new JSONObject();
         JSONObject errors = new JSONObject();
@@ -129,7 +129,7 @@ public class EditBookServlet extends BaseProtectedPage {
             
             boolean valid = true;
             try {
-                Book existingIsbnBook = bookRepo.getBookInfo(businessSession, bookIsbn);
+                Book existingIsbnBook = bookRepo.getBookInfo(sessionBean, bookIsbn);
                 if(existingIsbnBook != null){
                     if( existingIsbnBook.getID() != id){
                         valid = false;
@@ -140,7 +140,7 @@ public class EditBookServlet extends BaseProtectedPage {
                     }
                 }
 
-                Book book = bookRepo.getBookInfo(businessSession, id);
+                Book book = bookRepo.getBookInfo(sessionBean, id);
                 if(book == null){
                     valid = false;
                     message = "Error book does not exist.";
@@ -163,10 +163,10 @@ public class EditBookServlet extends BaseProtectedPage {
                     publisher.setAddress(bookPublisherAddress);
                     book.setPublisher(publisher);
 
-                    bookRepo.updateBookInfo(businessSession, id, book);
+                    bookRepo.updateBookInfo(sessionBean, id, book);
 
                     if(clearCover){
-                        bookRepo.clearCoverImage(businessSession, id);
+                        bookRepo.clearCoverImage(sessionBean, id);
                     } 
 
 
@@ -187,7 +187,7 @@ public class EditBookServlet extends BaseProtectedPage {
                         }
                     }
                     if(cover != null){
-                        bookRepo.setCoverImage(businessSession, id, cover);
+                        bookRepo.setCoverImage(sessionBean, id, cover);
                     }
                 }
                 result.put("status", "success");

@@ -2,6 +2,7 @@ package com.soen387.session.com.soen387.session.core;
 
 import com.soen387.repository.com.soen387.repository.core.SecurityContext;
 import com.soen387.repository.com.soen387.repository.core.Session;
+import com.soen387.repository.com.soen387.repository.core.User;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -18,16 +19,27 @@ import org.json.simple.JSONObject;
  */
 public class BaseProtectedPage extends HttpServlet {
     
-    Session businessSession = null; // WARNING THIS OBJECT WILL PERSIST BETWEEN CALLS
     
     public BaseProtectedPage(){
         super();
     }
     
+    protected Session getSessionBean(HttpServletRequest request){
+        Session sessionBean = null;
+        HttpSession httpSession = request.getSession();
+        if(httpSession != null){
+            if(httpSession.getAttribute("sessionBean") != null)
+                sessionBean = (Session)httpSession.getAttribute("sessionBean");
+        }
+        
+        
+        
+        return sessionBean;
+    }
     
     protected boolean isLoggedIn(HttpServletRequest request){
-        HttpSession session = request.getSession(true);
-        return session != null && session.getAttribute("user_id") != null;
+        Session sessionBean = getSessionBean(request);
+        return sessionBean == null ? false : sessionBean.isUserLoggedIn();
     }
     
     
@@ -51,13 +63,16 @@ public class BaseProtectedPage extends HttpServlet {
         
         
     
-    public JSONObject getUserJSON(){
-        HttpSession session = businessSession.getHttpSession();
+    public JSONObject getUserJSON(HttpServletRequest request){
+        Session sessionBean = getSessionBean(request);
         JSONObject result = null;
-        if(session != null && session.getAttribute("user_id") != null){
-            result = new JSONObject();
-            result.put("id", session.getAttribute("user_id"));
-            result.put("username", session.getAttribute("username"));
+        if(sessionBean != null){
+            User user = sessionBean.getCurrentUser();
+            if(user != null){
+                result = new JSONObject();
+                result.put("id", user.getId());
+                result.put("username", user.getUsername());
+            }
         }
         return result;
     }

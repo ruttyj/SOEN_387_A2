@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 @WebServlet("/deleteBooks")
 public class DeleteBooksServlet extends BaseProtectedPage {
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
+        Session sessionBean = this.getSessionBean(request);
         PrintWriter out = response.getWriter();
         JSONObject result = new JSONObject();
         result.put("status", "failure");
@@ -57,7 +57,7 @@ public class DeleteBooksServlet extends BaseProtectedPage {
                     IBookRepository bookRepo = BookRepository.getInstance(this.getSecurityContext(request));
 
                     for(int i=0; i < deleteIds.size(); ++i){
-                        bookRepo.deleteBook(businessSession, deleteIds.get(i));
+                        bookRepo.deleteBook(sessionBean, deleteIds.get(i));
                     }
                     result.put("status", "success");
                     result.put("message", "Sucessfully Deleted " + deleteIds.size() + " " + (deleteIds.size() == 1 ? "item" : "items") + ".");

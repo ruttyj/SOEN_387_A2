@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 public class HomeServlet extends BaseProtectedPage {
     
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
+        Session sessionBean = this.getSessionBean(request);
         if(this.checkLoggedInPage(request, response)){
             PrintWriter out = response.getWriter();
             
@@ -46,14 +46,14 @@ public class HomeServlet extends BaseProtectedPage {
             
             // Get page data
             JSONObject initalData = new JSONObject();
-            initalData.put("userData", getUserJSON());
+            initalData.put("userData", getUserJSON(request));
             
             // Book list
             JSONObject pageData = new JSONObject();
             JSONArray bookListJson = new JSONArray();
             try {
                 IBookRepository bookRepo = BookRepository.getInstance("context");
-                ArrayList<Book> allBooks = bookRepo.listAllBooks(businessSession);
+                ArrayList<Book> allBooks = bookRepo.listAllBooks(sessionBean);
                 int i;
                 Book currentBook;
                 for(i = 0; i < allBooks.size(); ++i){

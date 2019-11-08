@@ -36,7 +36,6 @@ import java.util.logging.Logger;
 public class AddBookServlet extends BaseProtectedPage {
     
     public void doDisplayBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
         if(this.checkLoggedInPage(request, response)){
             PrintWriter out = response.getWriter();
             
@@ -45,7 +44,7 @@ public class AddBookServlet extends BaseProtectedPage {
             
             // Get page data
             JSONObject initalData = new JSONObject();
-            initalData.put("userData", getUserJSON());
+            initalData.put("userData", getUserJSON(request));
             
             JSONObject pageData = new JSONObject();
             initalData.put("pageData", pageData);
@@ -62,7 +61,7 @@ public class AddBookServlet extends BaseProtectedPage {
     
     
     public void doAddBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        businessSession = new Session(request);
+        Session sessionBean = this.getSessionBean(request);
         
         PrintWriter out = response.getWriter();
         JSONObject result = new JSONObject();
@@ -118,7 +117,7 @@ public class AddBookServlet extends BaseProtectedPage {
 
 
                 boolean valid = true;
-                Book existingBook = bookRepo.getBookInfo(businessSession, bookIsbn);
+                Book existingBook = bookRepo.getBookInfo(sessionBean, bookIsbn);
                 if(existingBook != null){
                     valid = false;
                     JSONArray isbnErrors = new JSONArray();
@@ -143,11 +142,11 @@ public class AddBookServlet extends BaseProtectedPage {
                     publisher.setAddress(bookPublisherAddress);
                     book.setPublisher(publisher);
 
-                    int newBookID = bookRepo.addNewBook(businessSession, book);
+                    int newBookID = bookRepo.addNewBook(sessionBean, book);
 
                     if(newBookID != 0){
                         if(cover != null){
-                            bookRepo.setCoverImage(businessSession, newBookID, cover);
+                            bookRepo.setCoverImage(sessionBean, newBookID, cover);
                         }
                         result.put("status", "success");
                         result.put("id", newBookID);

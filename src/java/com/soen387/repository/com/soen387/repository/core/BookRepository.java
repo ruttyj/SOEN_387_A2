@@ -51,9 +51,8 @@ public class BookRepository implements IBookRepository {
         return AppConfig.getInstance().getDbPassword();
     }
     
-    // SecurityContext can be used to limit the users interaction with the repository based on permissions (which dont exis't in this project)
-    public static IBookRepository getInstance(SecurityContext securityContext) {
-        if(securityContext == null)
+    public static IBookRepository getInstance(Object context) {
+        if(context == null)
             return null;
         
         if (IRepository == null) {
@@ -84,7 +83,7 @@ public class BookRepository implements IBookRepository {
     
     @Override
     public ArrayList<Book> listAllBooks(Session session) throws RepositoryException {
-        if(!session.isUserLoggedIn())
+        if(session == null || !session.isUserLoggedIn())
             throw new RepositoryException();
         
         ArrayList<Book> results = new ArrayList<Book>();
@@ -116,7 +115,7 @@ public class BookRepository implements IBookRepository {
 
     @Override
     public Book getBookInfo(Session session, int id) throws RepositoryException {
-        if(!session.isUserLoggedIn())
+        if(session == null || !session.isUserLoggedIn())
             throw new RepositoryException();
         
         Book result = null;
@@ -156,7 +155,7 @@ public class BookRepository implements IBookRepository {
 
     @Override
     public Book getBookInfo(Session session, String isbn) throws RepositoryException {
-        if(!session.isUserLoggedIn())
+        if(session == null || !session.isUserLoggedIn())
             throw new RepositoryException();
         
         Book result = null;
@@ -237,7 +236,7 @@ public class BookRepository implements IBookRepository {
     
     @Override
     public int addNewBook(Session session, Book book) throws RepositoryException {
-        if(!session.isUserLoggedIn())
+        if(session == null || !session.isUserLoggedIn())
             throw new RepositoryException();
         
         int id = 1;
@@ -286,7 +285,7 @@ public class BookRepository implements IBookRepository {
     
     @Override
     public void updateBookInfo(Session session, int id, Book book) throws RepositoryException{
-        if(!session.isUserLoggedIn())
+        if(session == null || !session.isUserLoggedIn())
             throw new RepositoryException();
         
         PreparedStatement pstmt = null;
@@ -330,7 +329,7 @@ public class BookRepository implements IBookRepository {
     
     @Override
     public boolean setCoverImage(Session session, int id, CoverImage cover) throws RepositoryException{
-        if(!session.isUserLoggedIn())
+        if(session == null || !session.isUserLoggedIn())
             throw new RepositoryException();
         
         PreparedStatement pstmt = null;
@@ -405,7 +404,7 @@ public class BookRepository implements IBookRepository {
 
     @Override
     public CoverImage getCoverImage(Session session, int id) throws RepositoryException{
-        if(!session.isUserLoggedIn())
+        if(session == null || !session.isUserLoggedIn())
             throw new RepositoryException();
         
         CoverImage result = null;
@@ -448,7 +447,7 @@ public class BookRepository implements IBookRepository {
     
     @Override
     public void deleteBook(Session session, int id) throws RepositoryException {
-        if(!session.isUserLoggedIn())
+        if(session == null || !session.isUserLoggedIn())
             throw new RepositoryException();
         
         PreparedStatement pstmt = null;
@@ -479,7 +478,7 @@ public class BookRepository implements IBookRepository {
 
     @Override
     public void deleteAllBooks(Session session) throws RepositoryException {
-        if(!session.isUserLoggedIn())
+        if(session == null || !session.isUserLoggedIn())
             throw new RepositoryException();
         
         PreparedStatement pstmt = null;
