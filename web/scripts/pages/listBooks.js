@@ -190,14 +190,8 @@ Vue.component('app-page', {
             try {
                 console.log('Submitted & waiting');
                 var request = {
-                    method: 'post', // @TODO change this to delete
-                    url: 'deleteBooks',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    data: simpleQueryString.stringify({
-                        ids: ids,
-                    }),
+                    method: 'delete', // @TODO change this to delete
+                    url: 'deleteBooks?'+$.param({ids: ids}),
                 };
                 console.log('request', request);
                 var response = await axios(request);

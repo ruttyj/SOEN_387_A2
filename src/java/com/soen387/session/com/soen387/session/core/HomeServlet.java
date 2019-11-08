@@ -39,7 +39,6 @@ public class HomeServlet extends BaseProtectedPage {
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Session sessionBean = this.getSessionBean(request);
         if(this.checkLoggedInPage(request, response)){
-            PrintWriter out = response.getWriter();
             
             //Get the required view
             RequestDispatcher view = request.getRequestDispatcher("WEB-INF/templates/protectedPage.jsp"); 
@@ -86,5 +85,6 @@ public class HomeServlet extends BaseProtectedPage {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doRequest(request, response);
     }
+    
 }
 

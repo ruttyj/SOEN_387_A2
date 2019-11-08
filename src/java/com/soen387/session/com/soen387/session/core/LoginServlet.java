@@ -71,6 +71,7 @@ public class LoginServlet extends BaseProtectedPage {
         
         response.setContentType("application/json"); 
         out.println(JSONResponse);
+        out.close();
     }
     
     

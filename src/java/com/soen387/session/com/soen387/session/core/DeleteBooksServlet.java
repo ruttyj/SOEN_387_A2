@@ -42,8 +42,8 @@ public class DeleteBooksServlet extends BaseProtectedPage {
         if(this.checkLoggedInResponse(request, response)){
             // Collect Ids into ArrayList
             ArrayList<Integer> deleteIds = new ArrayList<Integer>();
-            if(request.getParameter("ids") != null){
-                String[] paramValues = request.getParameterMap().get("ids");
+            if(request.getParameter("ids[]") != null){
+                String[] paramValues = request.getParameterMap().get("ids[]");
                 for (String paramValue : paramValues) {
                     int id = Integer.parseInt(paramValue);
                     if(id != 0){
@@ -69,15 +69,7 @@ public class DeleteBooksServlet extends BaseProtectedPage {
         }
         response.setContentType("application/json");
         out.println(result);
-    }
-    
-    //@TODO move from post to delete 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doRequest(request, response);
-    }
-    
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doRequest(request, response);
+        out.close();
     }
     
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

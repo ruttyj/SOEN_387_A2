@@ -37,8 +37,6 @@ public class ViewBookServlet extends BaseProtectedPage {
         Session sessionBean = this.getSessionBean(request);
         if(this.checkLoggedInPage(request, response)){
             
-            PrintWriter out = response.getWriter();
-            
             //Get the required view
             RequestDispatcher view = request.getRequestDispatcher("WEB-INF/templates/protectedPage.jsp"); 
             

@@ -164,6 +164,7 @@ public class AddBookServlet extends BaseProtectedPage {
         }
         response.setContentType("application/json");
         out.println(result);
+        out.close();
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
