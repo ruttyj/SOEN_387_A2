@@ -79,7 +79,6 @@ public class BookRepository implements IBookRepository {
         }
         return IRepository;
     }
-
     
     @Override
     public ArrayList<Book> listAllBooks(Session session) throws RepositoryException {
@@ -198,9 +197,6 @@ public class BookRepository implements IBookRepository {
         return result;
     }
 
-    
-    
-    
     private int getNextBookID(Connection conn) {
         int id = 1;
         ResultSet res = null;
@@ -232,10 +228,8 @@ public class BookRepository implements IBookRepository {
         return id;
     }
 
-    
-    
     @Override
-    public int addNewBook(Session session, Book book) throws RepositoryException {
+    public int addNewBook(Session session, Book book) throws RepositoryException, SQLException {
         if(session == null || !session.isUserLoggedIn())
             throw new RepositoryException();
         
@@ -265,7 +259,9 @@ public class BookRepository implements IBookRepository {
             conn.commit();
 
         } catch (SQLException ex) {
-            Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(BookRepository.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            System.out.println(ex.getClass());
         } finally {
             try {
                 if (pstmt != null) {
@@ -276,10 +272,10 @@ public class BookRepository implements IBookRepository {
                 }
 
             } catch (SQLException se) {
-                se.printStackTrace();
+                
             }
         }
-        System.out.println("Book #" + id + " created...");
+        //System.out.println("Book #" + id + " created...");
         return id;
     }
     
@@ -324,8 +320,8 @@ public class BookRepository implements IBookRepository {
                 se.printStackTrace();
             }
         }
+        
     }
-
     
     @Override
     public boolean setCoverImage(Session session, int id, CoverImage cover) throws RepositoryException{
@@ -395,7 +391,6 @@ public class BookRepository implements IBookRepository {
         
         return affectedRows != 0;
     }
-    
     
     @Override
     public boolean clearCoverImage(Session session, int id) throws RepositoryException{
@@ -507,7 +502,6 @@ public class BookRepository implements IBookRepository {
             }
         }
     }
-
     
     protected Book makeBookFromRow(ResultSet res){
         Book book = null;
@@ -533,7 +527,6 @@ public class BookRepository implements IBookRepository {
         } 
         return book;
     }
-    
     
     protected CoverImage makeCoverImageFromRow(ResultSet res){
         CoverImage cover = null;

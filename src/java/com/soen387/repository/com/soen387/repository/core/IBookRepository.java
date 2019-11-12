@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package com.soen387.repository.com.soen387.repository.core;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -18,7 +19,7 @@ public interface IBookRepository {
 
     public Book getBookInfo(Session session, String isbn) throws RepositoryException;
 
-    public int addNewBook(Session session, Book book) throws RepositoryException;
+    public int addNewBook(Session session, Book book) throws RepositoryException, SQLException;
 
     public void updateBookInfo(Session session, int id, Book book) throws RepositoryException; 
     

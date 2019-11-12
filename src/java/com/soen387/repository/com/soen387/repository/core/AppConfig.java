@@ -15,12 +15,14 @@ import java.util.logging.Logger;
 public class AppConfig {
     
     // Comment switch chage the first line /*/ to //*/  or vice versa to change
-    //*/ 
+    /*/ 
     private String userJsonFilePath = "C:\\Programming\\SOEN_387_A2\\users.JSON";
     private String noImagePath = "C:\\Programming\\SOEN_387_A2\\noImage.png";
+    private String testImagePath = "C:\\Programming\\SOEN_387_A2\\downloadj.jpg";
     /*/
     private String userJsonFilePath = "C:\\Users\\Louis-Simon\\Documents\\NetBeansProjects\\SOEN_387_A2\\users.JSON";
     private String noImagePath = "C:\\Users\\Louis-Simon\\Documents\\NetBeansProjects\\SOEN_387_A2\\noImage.png";
+    private String testImagePath = "C:\\Users\\Louis-Simon\\Documents\\NetBeansProjects\\SOEN_387_A2\\downloadj.jpg";
     //*/
     
     
@@ -55,7 +57,6 @@ public class AppConfig {
         return instance;
     }
     
-    
     public String getUserJsonFilePath(){
         return this.config.getProperty("userJsonFilePath");
     }
@@ -75,8 +76,11 @@ public class AppConfig {
         return this.config.getProperty("dbPass");
     }
     
-    
     public String getNoImagePath(){
         return this.config.getProperty("noImagePath");
+    }
+    
+    public String getTestImagePath() {
+        return this.config.getProperty("testImagePath");
     }
 }

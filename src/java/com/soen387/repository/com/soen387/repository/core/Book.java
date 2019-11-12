@@ -25,14 +25,21 @@ public class Book implements Serializable {
     private String isbn;
     private Author author;
     private Publisher publisher;
-    
+
     private boolean hasCover = false;
-    
+
     public Book() {
-        
+
     }
 
-    
+    public Book(String title, String description, String isbn, Author author, Publisher publisher) {
+        this.title = title;
+        this.description = description;
+        this.isbn = isbn;
+        this.author = author;
+        this.publisher = publisher;
+    }
+
     // ID
     public int getID() {
         return bookID;
@@ -41,8 +48,7 @@ public class Book implements Serializable {
     public void setID(int bookID) {
         this.bookID = bookID;
     }
-    
-    
+
     // **DEPRECATED **
     public int getBookID() {
         return bookID;
@@ -52,7 +58,6 @@ public class Book implements Serializable {
         this.bookID = bookID;
     }
 
-    
     // Title
     public String getTitle() {
         return title;
@@ -62,7 +67,6 @@ public class Book implements Serializable {
         this.title = title;
     }
 
-    
     // Description
     public String getDescription() {
         return description;
@@ -72,7 +76,6 @@ public class Book implements Serializable {
         this.description = description;
     }
 
-    
     // ISBN
     public String getIsbn() {
         return isbn;
@@ -82,42 +85,34 @@ public class Book implements Serializable {
         this.isbn = isbn;
     }
 
-    
     // Author
-    public void setAuthor(Author author){
+    public void setAuthor(Author author) {
         this.author = author;
     }
 
-    public Author getAuthor(){
+    public Author getAuthor() {
         return this.author;
     }
 
     // Publisher
-    public void setPublisher(Publisher publisher){
+    public void setPublisher(Publisher publisher) {
         this.publisher = publisher;
     }
 
-    public Publisher getPublisher(){
+    public Publisher getPublisher() {
         return this.publisher;
     }
 
-    
     // Has Cover
-    public void setHasCover(boolean hasCover){
+    public void setHasCover(boolean hasCover) {
         this.hasCover = hasCover;
     }
 
-    public boolean getHasCover(){
+    public boolean getHasCover() {
         return this.hasCover;
     }
 
-    
-    
-    
-    
-    
     //===========AUTO-GENERATED NETBEANS STUFF
-    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -155,9 +150,5 @@ public class Book implements Serializable {
     public String toString() {
         return "com.soen387.repository.core.Book[ id=" + id + " ]";
     }
-    
 
-    
-    
-    
 }
